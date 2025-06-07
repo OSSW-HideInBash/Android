@@ -13,4 +13,6 @@
     <color name="first_red">#FF0808</color>
     <color name="second_blue">#1808FF</color>
     <color name="third_yellow">#FFE500</color>
+
+    <color name="button_yellow">#FFDC85</color>
 </resources>

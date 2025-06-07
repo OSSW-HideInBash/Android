@@ -38,5 +38,9 @@ class TodoFragment : Fragment() {
         binding.todoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.todoRecyclerView.adapter = adapter
         binding.todoRecyclerView.addItemDecoration(ItemDecoration(50))  // 아이템 간격 설정
+
+        binding.todoAddBtn.setOnClickListener {
+            TodoAddDialogFragment().show(parentFragmentManager, "TodoAddDialogFragment")
+        }
     }
 }

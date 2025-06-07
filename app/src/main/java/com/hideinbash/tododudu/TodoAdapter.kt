@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
-class TodoAdapter(private val items: List<Todo>) :
+class TodoAdapter(private var items: List<Todo>) :
     RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
@@ -47,5 +47,10 @@ class TodoAdapter(private val items: List<Todo>) :
         val editIcon: ImageView = view.findViewById(R.id.todo_item_fix_iv)
         val title: TextView = view.findViewById(R.id.todo_item_title_tv)
         val desc: TextView = view.findViewById(R.id.todo_item_content_tv)
+    }
+
+    fun updateList(newItems: List<Todo>) {
+        items = newItems
+        notifyDataSetChanged()
     }
 }

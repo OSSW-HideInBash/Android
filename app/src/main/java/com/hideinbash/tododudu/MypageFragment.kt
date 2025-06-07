@@ -12,30 +12,57 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.hideinbash.tododudu.databinding.FragmentMypageBinding
-import com.hideinbash.tododudu.databinding.FragmentTodoBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.TimeUnit
 
 class MypageFragment:Fragment() {
     private var _binding: FragmentMypageBinding? = null
     private val binding get() = _binding!!
+    //이미지 전송할때, requestbody용
+    private var body : MultipartBody.Part? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
 
+        Glide.with(this)
+            .load("https://animatedoss.s3.amazonaws.com/f559382c-428c-46d6-973c-8324f3226e88/video.gif") // S3 이미지 URL
+            .into(binding.defaultCharacterIv)
         binding.btnImageUpload.setOnClickListener {
             selectGallery()
+
+        }
+        binding.btnImageDefault.setOnClickListener {
+            uploadImageToFlask()
+        }
+        binding.btnDetailEdit.setOnClickListener {
+            /*if(uri == null){
+                Toast.makeText(requireContext(),"기본 이미지 입니다.",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }*/
+            var dialog = DetailEditDialog(requireContext(),uri)
+            dialog.show()
         }
 
         return binding.root
@@ -45,8 +72,7 @@ class MypageFragment:Fragment() {
     //이미리 저장된 이미지를 받아오기 위해 사용중, 참고로 manifest에 권한 설정을 해야한다.
     private lateinit var imageResultLauncher: ActivityResultLauncher<Intent>
 
-    //이미지 전송할때, requestbody용
-    private var body : MultipartBody.Part? = null
+
 
     private var uri: Uri? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -133,10 +159,59 @@ class MypageFragment:Fragment() {
         intent.type = "image/*"
         imageResultLauncher.launch(intent)
     }
-
-
-
     companion object {
         private const val REQ_GALLERY = 1
+    }
+
+    fun uploadImageToFlask() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val loadingDialog = LoadingDialog(requireContext()) // 로딩창 생성
+            loadingDialog.show()
+
+            if (body == null) {
+                loadingDialog.dismiss()
+                Toast.makeText(requireContext(), "이미지가 기본 이미지 입니다", Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+
+            val client = OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build()
+
+            val requestBody = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addPart(body!!)
+                .build()
+
+            val request = Request.Builder()
+                .url("http://13.55.149.37:5000/gif/inside")
+                .post(requestBody)
+                .build()
+
+            try {
+                // 백그라운드 처리
+                val response = withContext(Dispatchers.IO) {
+                    client.newCall(request).execute()
+                }
+
+                val responseBody = response.body?.string()
+                if (responseBody != null) {
+                    val gifUrl = JSONObject(responseBody).getString("gif_url")
+
+                    Glide.with(requireContext())
+                        .load(gifUrl)
+                        .into(binding.defaultCharacterIv)
+                } else {
+                    Log.d("gif-test", "응답 본문이 null입니다.")
+                }
+
+            } catch (e: Exception) {
+                Log.e("gif-test", "에러 발생: ${e.message}")
+            } finally {
+                loadingDialog.dismiss() // 무조건 로딩창 닫기
+            }
+        }
     }
 }

@@ -44,10 +44,25 @@
         android:gravity="center"
         android:textStyle="bold"
         android:textColor="@color/white"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_image_upload"
+        android:background="@drawable/mypage_mainbtn_bg"/>
+    <TextView
+        android:id="@+id/btn_detail_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="상세 편집"
+        android:fontFamily="@font/dos_gothic"
+        android:textSize="28dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_image_default"
         android:background="@drawable/mypage_mainbtn_bg"/>
     <ImageView
         android:id="@+id/default_character_iv"

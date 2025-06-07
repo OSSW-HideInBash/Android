@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/round_rect"
-    android:backgroundTint="@color/first_red_bg">
+    android:background="@drawable/round_rect">
 
     <ImageView
         android:id="@+id/todo_item_order_iv"

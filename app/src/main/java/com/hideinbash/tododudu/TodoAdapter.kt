@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class TodoAdapter(private val items: List<Todo>) :
@@ -19,9 +20,23 @@ class TodoAdapter(private val items: List<Todo>) :
         val item = items[position]
         holder.title.text = item.title
         holder.desc.text = item.description
-        // 우선순위 표시 (예시)
         holder.orderText.text = "${item.priority}순위"
-        // 필요 시 날짜, 완료 여부 등 추가 표시 가능
+
+        // priority에 따라 색 변경
+        when (item.priority) {
+            1 -> {
+                holder.itemView.setBackgroundColor(holder.itemView.context.getColor(R.color.first_red_bg))
+                holder.orderIcon.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.first_red))
+            }
+            2 -> {
+                holder.itemView.setBackgroundColor(holder.itemView.context.getColor(R.color.second_blue_bg))
+                holder.orderIcon.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.second_blue))
+            }
+            3 -> {
+                holder.itemView.setBackgroundColor(holder.itemView.context.getColor(R.color.third_yellow_bg))
+                holder.orderIcon.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.third_yellow))
+            }
+        }
     }
 
     override fun getItemCount() = items.size

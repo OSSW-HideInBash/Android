@@ -5,15 +5,149 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".TodoFragment">
+
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="여긴 todo"
-        android:textSize="13dp"
-        android:gravity="center"
+        android:id="@+id/todo_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="n월 n일"
+        android:textSize="30sp"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"/>
+    <ImageView
+        android:id="@+id/todo_arrow_left_iv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/baseline_arrow_circle_left_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/todo_date_tv"
+        android:layout_marginStart="20dp"/>
+    <ImageView
+        android:id="@+id/todo_arrow_right_iv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/baseline_arrow_circle_right_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/todo_date_tv"
+        android:layout_marginEnd="20dp"/>
+
+    <ProgressBar
+        android:id="@+id/todo_pb"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progressBackgroundTint="#FBE7C6"
+        android:progressDrawable="@drawable/circle_progressbar"
+        android:progressTint="#E5C300"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/todo_date_tv"/>
+    <ImageView
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@drawable/black_circle"
+        app:layout_constraintStart_toStartOf="@id/todo_pb"
+        app:layout_constraintEnd_toEndOf="@id/todo_pb"
+        app:layout_constraintTop_toTopOf="@id/todo_pb"
+        app:layout_constraintBottom_toBottomOf="@id/todo_pb"/>
+    <TextView
+        android:id="@+id/todo_pb_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="n / n"
+        android:textColor="@color/yellow"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/todo_pb"
+        app:layout_constraintEnd_toEndOf="@id/todo_pb"
+        app:layout_constraintTop_toTopOf="@id/todo_pb"
+        app:layout_constraintBottom_toBottomOf="@id/todo_pb"/>
+
+    <View
+        android:id="@+id/todo_bar"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/todo_pb"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/todo_all_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="전체"
+        android:textSize="15sp"
+        android:background="@drawable/round_rect"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="8dp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/unselected"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/todo_bar"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:id="@+id/todo_yet_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="예정"
+        android:textSize="15sp"
+        android:background="@drawable/round_rect"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="8dp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/selected"
+        app:layout_constraintStart_toEndOf="@id/todo_all_btn"
+        app:layout_constraintTop_toBottomOf="@id/todo_bar"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:id="@+id/todo_done_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="완료"
+        android:textSize="15sp"
+        android:background="@drawable/round_rect"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="8dp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/unselected"
+        app:layout_constraintStart_toEndOf="@id/todo_yet_btn"
+        app:layout_constraintTop_toBottomOf="@id/todo_bar"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/todo_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/todo_all_btn"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp">
+
+
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

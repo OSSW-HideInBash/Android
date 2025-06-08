@@ -203,11 +203,25 @@ class TodoFragment : Fragment() {
         var xpForNext = 100 + (level - 1) * 20 // 레벨업에 필요한 XP 계산
 
         xp += amount
+
+        // 레벨업
         while (xp >= xpForNext) {
             xp -= xpForNext
             level++
             xpForNext = 100 + (level - 1) * 20 // 다음 레벨업에 필요한 XP 계산
         }
+
+        // 레벨다운
+        while (xp < 0 && level > 1) {
+            level--
+            xpForNext = 100 + (level - 1) * 20 // 이전 레벨업에 필요한 XP 계산
+            xp += xpForNext
+        }
+
+        // 최소값 보정
+        if (xp < 0) xp = 0
+        if (level < 1) level = 1
+
         prefs.edit()
             .putInt("xp", xp)
             .putInt("level", level)

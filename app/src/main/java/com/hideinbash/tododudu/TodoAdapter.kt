@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 
 class TodoAdapter(
     private var items: List<Todo>,
-    private val onOrderIconClick: (Todo) -> Unit = {},
     private val onEdit: (Todo) -> Unit,
     private val onToggleComplete: (Todo) -> Unit
 ) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
@@ -43,18 +42,14 @@ class TodoAdapter(
             }
         }
 
-        // 아이콘 클릭 리스너 설정
+        // 아이콘 클릭 리스너 설정 (완료처리)
         holder.orderIcon.setOnClickListener {
-            onOrderIconClick(item)
+            onToggleComplete(item)
         }
 
         // 수정 아이콘 클릭 리스너 설정
         holder.editIcon.setOnClickListener {
             onEdit(item)
-        }
-
-        holder.itemView.setOnClickListener {
-            onToggleComplete(item)
         }
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +35,19 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // RoomDB에서 할 일 목록을 가져오기
-        adapter = TodoAdapter(emptyList()) // 초기에는 빈 리스트로 설정
+        adapter = TodoAdapter(emptyList()) { todo ->
+            // isCompleted 값을 반전시켜 새로운 객체 생성
+            val updatedTodo = todo.copy(isCompleted = !todo.isCompleted)
+            CoroutineScope(Dispatchers.IO).launch {
+                val db = TodoDatabase.getInstance(requireContext())
+                db.todoDao().updateTodo(updatedTodo)
+                withContext(Dispatchers.Main) {
+                    val msg = if (updatedTodo.isCompleted) "완료로 변경되었습니다." else "예정으로 변경되었습니다."
+                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    loadTodosFromRoom() // 리스트 새로고침
+                }
+            }
+        }
         binding.todoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.todoRecyclerView.adapter = adapter
         binding.todoRecyclerView.addItemDecoration(ItemDecoration(50))  // 아이템 간격 설정

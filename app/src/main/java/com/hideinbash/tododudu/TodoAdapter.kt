@@ -9,8 +9,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
-class TodoAdapter(private var items: List<Todo>) :
-    RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
+class TodoAdapter(
+    private var items: List<Todo>,
+    private val onOrderIconClick: (Todo) -> Unit
+) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_todo, parent, false)
@@ -37,6 +39,11 @@ class TodoAdapter(private var items: List<Todo>) :
                 holder.itemView.setBackgroundColor(holder.itemView.context.getColor(R.color.third_yellow_bg))
                 holder.orderIcon.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.third_yellow))
             }
+        }
+
+        // 아이콘 클릭 리스너 설정
+        holder.orderIcon.setOnClickListener {
+            onOrderIconClick(item)
         }
     }
 

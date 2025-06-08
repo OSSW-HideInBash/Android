@@ -21,7 +21,7 @@ class TodoFragment : Fragment() {
 
     // 현재 선택된 필터 상태
     private enum class FilterType { ALL, YET, DONE }
-    private var currentFilter: FilterType = FilterType.ALL
+    private var currentFilter: FilterType = FilterType.YET  // 기본값
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

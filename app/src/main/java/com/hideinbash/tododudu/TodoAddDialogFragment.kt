@@ -10,20 +10,43 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TodoAddDialogFragment : DialogFragment() {
+class TodoAddDialogFragment(
+    private val mode: Mode = Mode.CREATE,
+    private val todo: Todo? = null, // 수정 모드일 때 기존 Todo 객체를 전달
+    private val onComplete: (() -> Unit)? = null // DB 작업 후 UI 갱신용 콜백
+) : DialogFragment() {
 
     lateinit var binding: FragmentTodoAddDialogBinding
+    enum class Mode { CREATE, EDIT }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentTodoAddDialogBinding.inflate(inflater, container, false)
 
+        // 닫기 버튼
         binding.todoaddCloseBtn.setOnClickListener{
             dismiss()
         }
 
+        // 모드에 따라 UI 설정
+        if (mode == Mode.EDIT && todo != null) {
+            binding.todoaddTitleTv.text = "할 일 수정"
+            binding.todoaddCreateBtn.text = "수정하기"
+            binding.todoaddTitleInput.setText(todo.title)
+            binding.todoaddDescInput.setText(todo.description)
+            when (todo.priority) {
+                1 -> binding.todoaddPriority1.isChecked = true
+                2 -> binding.todoaddPriority2.isChecked = true
+                3 -> binding.todoaddPriority3.isChecked = true
+            }
+        } else {
+            binding.todoaddTitleTv.text = "할 일 생성"
+            binding.todoaddCreateBtn.text = "생성하기"
+        }
+
+        // 생성,수정 버튼 클릭 리스너
         binding.todoaddCreateBtn.setOnClickListener {
             val title = binding.todoaddTitleInput.text.toString()
             val desc = binding.todoaddDescInput.text.toString()
@@ -38,18 +61,29 @@ class TodoAddDialogFragment : DialogFragment() {
 
             val date = "2025-06-08" // 예시 날짜, 실제로는 현재 날짜로 설정해야 함
 
-            val todo = Todo(
-                title = title,
-                description = desc,
-                priority = priority,
-                date = date
-            )
-
             // RoomDB에 저장
             CoroutineScope(Dispatchers.IO).launch {
                 val db = TodoDatabase.getInstance(requireContext())
-                db.todoDao().insertTodo(todo)
-                dismiss()   // 다이얼로그 닫기
+                if (mode == Mode.EDIT && todo != null) {
+                    // 수정 모드: 기존 id로 업데이트
+                    val updated = todo.copy(
+                        title = title,
+                        description = desc,
+                        priority = priority
+                    )
+                    db.todoDao().updateTodo(updated)
+                } else {
+                    // 생성 모드
+                    val newTodo = Todo(
+                        title = title,
+                        description = desc,
+                        priority = priority,
+                        date = date
+                    )
+                    db.todoDao().insertTodo(newTodo)
+                }
+                onComplete?.invoke() // DB 작업 후 UI 갱신 콜백
+                dismiss()
             }
         }
 

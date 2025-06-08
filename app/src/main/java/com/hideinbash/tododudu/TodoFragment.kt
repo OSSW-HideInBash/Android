@@ -35,19 +35,29 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // RoomDB에서 할 일 목록을 가져오기
-        adapter = TodoAdapter(emptyList()) { todo ->
-            // isCompleted 값을 반전시켜 새로운 객체 생성
-            val updatedTodo = todo.copy(isCompleted = !todo.isCompleted)
-            CoroutineScope(Dispatchers.IO).launch {
-                val db = TodoDatabase.getInstance(requireContext())
-                db.todoDao().updateTodo(updatedTodo)
-                withContext(Dispatchers.Main) {
-                    val msg = if (updatedTodo.isCompleted) "완료로 변경되었습니다." else "예정으로 변경되었습니다."
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                    loadTodosFromRoom() // 리스트 새로고침
+        adapter = TodoAdapter(
+            items = emptyList(),
+            onToggleComplete = { todo ->
+                val updatedTodo = todo.copy(isCompleted = !todo.isCompleted)
+                CoroutineScope(Dispatchers.IO).launch {
+                    val db = TodoDatabase.getInstance(requireContext())
+                    db.todoDao().updateTodo(updatedTodo)
+                    withContext(Dispatchers.Main) {
+                        val msg = if (updatedTodo.isCompleted) "완료로 변경되었습니다." else "예정으로 변경되었습니다."
+                        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                        loadTodosFromRoom() // 리스트 새로고침
+                    }
                 }
+            },
+            onEdit = { todo ->
+                // 수정 다이얼로그 표시
+                TodoAddDialogFragment(
+                    mode = TodoAddDialogFragment.Mode.EDIT,
+                    todo = todo,
+                    onComplete = { loadTodosFromRoom() } // DB 작업 후 UI 갱신
+                ).show(parentFragmentManager, "TodoEditDialog")
             }
-        }
+        )
         binding.todoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.todoRecyclerView.adapter = adapter
         binding.todoRecyclerView.addItemDecoration(ItemDecoration(50))  // 아이템 간격 설정
@@ -77,7 +87,10 @@ class TodoFragment : Fragment() {
 
         // 할 일 추가 버튼
         binding.todoAddBtn.setOnClickListener {
-            TodoAddDialogFragment().show(parentFragmentManager, "TodoAddDialogFragment")
+            TodoAddDialogFragment(
+                mode = TodoAddDialogFragment.Mode.CREATE,
+                onComplete = { loadTodosFromRoom() } // DB 작업 후 UI 갱신
+            ).show(parentFragmentManager, "TodoAddDialog")
         }
 
         // 초기 데이터 로드
@@ -101,9 +114,6 @@ class TodoFragment : Fragment() {
     }
 
     private fun updateFilterUI() {
-        val selectedColor = ContextCompat.getColor(requireContext(), R.color.selected)
-        val unselectedColor = ContextCompat.getColor(requireContext(), R.color.unselected)
-
         binding.todoAllBtn.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
             if (currentFilter == FilterType.ALL) R.color.selected else R.color.unselected)
         binding.todoYetBtn.backgroundTintList = ContextCompat.getColorStateList(requireContext(),

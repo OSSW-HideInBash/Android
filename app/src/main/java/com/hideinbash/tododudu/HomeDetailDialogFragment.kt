@@ -30,6 +30,7 @@ class HomeDetailDialogFragment() : DialogFragment() {
     private lateinit var todo: Todo
     private var _binding: FragmentHomeDetailDialogBinding? = null
     private val binding get() = _binding!!
+    private var isEditMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,39 +49,129 @@ class HomeDetailDialogFragment() : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setDefaultUI()
 
-        binding.detailTitleTv.text = todo.title
-        binding.detailDescTv.text = todo.description
+        // 수정 버튼 클릭 시 수정 모드 진입
+        binding.detailEditBtn.setOnClickListener { enterEditMode() }
 
-        // priority에 따라 색 설정
-        when (todo.priority) {
-            1 -> { binding.detailOrderIv.setColorFilter(ContextCompat.getColor(requireContext(), R.color.first_red)) }
-            2 -> { binding.detailOrderIv.setColorFilter(ContextCompat.getColor(requireContext(), R.color.second_blue)) }
-            3 -> { binding.detailOrderIv.setColorFilter(ContextCompat.getColor(requireContext(), R.color.third_yellow)) }
+        // 수정모드에서 '수정' 버튼
+        binding.detailModifyBtn.setOnClickListener { saveEdit() }
+
+        // 수정모드에서 '취소' 버튼
+        binding.detailEditCancelBtn.setOnClickListener {
+            // 키보드 자동 내림
+            val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.hideSoftInputFromWindow(binding.detailTitleEdit.windowToken, 0)
+
+            exitEditMode()
         }
-
-        // 수정 버튼
-        // 로직구현
 
         // 완료 버튼
         binding.detailCompleteBtn.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val db = TodoDatabase.getInstance(requireContext())
-                // isCompleted만 true로 바꾼 새 객체 생성
                 val updatedTodo = todo.copy(isCompleted = true)
-                db.todoDao().updateTodo(updatedTodo) // RoomDB 업데이트
-
+                db.todoDao().updateTodo(updatedTodo)
                 withContext(Dispatchers.Main) {
                     addXp(20)
-                    onComplete?.invoke() // UI 갱신 콜백 호출
+                    onComplete?.invoke()
                     dismiss()
                 }
             }
         }
 
-        // 취소 버튼
-        binding.detailCancleBtn.setOnClickListener {
+        // 취소(닫기) 버튼
+        binding.detailCloseBtn.setOnClickListener {
             dismiss()
+        }
+    }
+
+    private fun setDefaultUI() {
+        isEditMode = false
+        // 제목/설명 TextView 보이기, EditText 숨기기
+        binding.detailTitleTv.text = todo.title
+        binding.detailDescTv.text = todo.description
+        binding.detailTitleTv.visibility = View.VISIBLE
+        binding.detailDescTv.visibility = View.VISIBLE
+        binding.detailTitleEdit.visibility = View.GONE
+        binding.detailDescEdit.visibility = View.GONE
+
+        // 우선순위 아이콘 표시, RadioGroup 숨김
+        binding.detailOrderIv.visibility = View.VISIBLE
+        binding.detailPriorityGroup.visibility = View.GONE
+        val colorRes = when (todo.priority) {
+            1 -> R.color.first_red
+            2 -> R.color.second_blue
+            3 -> R.color.third_yellow
+            else -> R.color.third_yellow
+        }
+        binding.detailOrderIv.setColorFilter(ContextCompat.getColor(requireContext(), colorRes))
+
+        // 버튼 표시
+        binding.detailEditBtn.visibility = View.VISIBLE
+        binding.detailCompleteBtn.visibility = View.VISIBLE
+        binding.detailCloseBtn.visibility = View.VISIBLE
+        binding.detailEditCancelBtn.visibility = View.GONE
+        binding.detailModifyBtn.visibility = View.GONE
+    }
+
+    private fun enterEditMode() {
+        isEditMode = true
+        // EditText에 기존 값 세팅
+        binding.detailTitleEdit.setText(todo.title)
+        binding.detailDescEdit.setText(todo.description)
+        binding.detailTitleTv.visibility = View.GONE
+        binding.detailDescTv.visibility = View.GONE
+        binding.detailTitleEdit.visibility = View.VISIBLE
+        binding.detailDescEdit.visibility = View.VISIBLE
+
+        // 우선순위 RadioGroup 표시, 아이콘 숨김
+        binding.detailOrderIv.visibility = View.GONE
+        binding.detailPriorityGroup.visibility = View.VISIBLE
+        when (todo.priority) {
+            1 -> binding.detailPriority1.isChecked = true
+            2 -> binding.detailPriority2.isChecked = true
+            3 -> binding.detailPriority3.isChecked = true
+        }
+
+        // 버튼 전환
+        binding.detailEditBtn.visibility = View.GONE
+        binding.detailCompleteBtn.visibility = View.GONE
+        binding.detailCloseBtn.visibility = View.GONE
+        binding.detailEditCancelBtn.visibility = View.VISIBLE
+        binding.detailModifyBtn.visibility = View.VISIBLE
+    }
+
+    private fun exitEditMode() {
+        setDefaultUI()
+    }
+
+    private fun saveEdit() {
+        val newTitle = binding.detailTitleEdit.text.toString()
+        val newDesc = binding.detailDescEdit.text.toString()
+        val checkedId = binding.detailPriorityGroup.checkedRadioButtonId
+        val newPriority = when (checkedId) {
+            R.id.detail_priority1 -> 1
+            R.id.detail_priority2 -> 2
+            R.id.detail_priority3 -> 3
+            else -> todo.priority
+        }
+        val updatedTodo = todo.copy(
+            title = newTitle,
+            description = newDesc,
+            priority = newPriority
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = TodoDatabase.getInstance(requireContext())
+            db.todoDao().updateTodo(updatedTodo)
+            withContext(Dispatchers.Main) {
+                // 키보드 자동 내림
+                val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.hideSoftInputFromWindow(binding.detailTitleEdit.windowToken, 0)
+
+                onComplete?.invoke()
+                dismiss()
+            }
         }
     }
 

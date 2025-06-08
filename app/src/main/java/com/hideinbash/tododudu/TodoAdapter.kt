@@ -1,5 +1,6 @@
 package com.hideinbash.tododudu
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class TodoAdapter(private var items: List<Todo>) :
         val desc: TextView = view.findViewById(R.id.todo_item_content_tv)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newItems: List<Todo>) {
         items = newItems
         notifyDataSetChanged()

@@ -21,4 +21,10 @@ interface TodoDao {
     @Query("SELECT * FROM todo ORDER BY date DESC, priority ASC")
     suspend fun getAllTodosRaw(): List<Todo>
     // LiveData가 아니라 List<Todo>를 반환하는 함수
+
+    @Query("SELECT * FROM todo WHERE isCompleted = 0 ORDER BY date DESC, priority ASC")
+    suspend fun getIncompleteTodos(): List<Todo>
+
+    @Query("SELECT * FROM todo WHERE isCompleted = 1 ORDER BY date DESC, priority ASC")
+    suspend fun getCompletedTodos(): List<Todo>
 }

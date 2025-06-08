@@ -17,4 +17,7 @@ interface TodoDao {
 
     @Query("SELECT * FROM todo WHERE date = :date ORDER BY priority ASC")
     suspend fun getTodosByDate(date: String): List<Todo>
+
+    @Query("SELECT * FROM todo WHERE date = :date AND isCompleted = 0 ORDER BY priority DESC")
+    suspend fun getYetTodosByDate(date: String): List<Todo>
 }

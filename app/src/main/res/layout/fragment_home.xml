@@ -4,16 +4,94 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".HomeFragment">
+    tools:context=".HomeFragment"
+    android:background="@drawable/home_bg">
+
+    <ImageView
+        android:id="@+id/home_main_character_iv"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/temp_character"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="100dp"/>
+
+    <ProgressBar
+        android:id="@+id/home_xp_pb"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:progress="40"
+        android:progressTint="@color/yellow"
+        android:progressBackgroundTint="@color/white"
+        android:scaleY="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="80dp"/>
     <TextView
+        android:id="@+id/home_level_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lv. nn"
+        android:textStyle="bold"
+        android:textColor="@color/yellow"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/home_xp_pb"
+        app:layout_constraintStart_toStartOf="@id/home_xp_pb"/>
+
+    <FrameLayout
+        android:id="@+id/home_todo_progress_group"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/home_main_character_iv"
+        android:layout_marginBottom="40dp">
+
+        <ProgressBar
+            android:id="@+id/home_todo_pb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/circle_progressbar_background"
+            android:progressDrawable="@drawable/circle_progressbar"
+            android:indeterminateOnly="false"
+            android:max="100"
+            android:progress="60"
+            android:padding="4dp"/>
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:src="@drawable/black_circle"/>
+
+        <TextView
+            android:id="@+id/home_todo_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="n / n"
+            android:textColor="@color/yellow"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_monster_rv"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="여긴 홈"
-        android:textSize="13dp"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintBottom_toTopOf="@id/home_main_character_iv"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="40dp"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

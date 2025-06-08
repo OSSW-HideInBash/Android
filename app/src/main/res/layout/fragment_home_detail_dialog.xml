@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_rect"
+    android:padding="24dp">
+
+    <!-- 우선순위: 기본은 아이콘, 수정모드에선 RadioGroup -->
+    <FrameLayout
+        android:id="@+id/detail_order_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/detail_order_iv"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/black_circle"
+            app:tint="@color/first_red"
+            android:layout_gravity="center"/>
+
+        <RadioGroup
+            android:id="@+id/detail_priority_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <RadioButton
+                android:id="@+id/detail_priority1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1순위"
+                android:buttonTint="@color/first_red"
+                android:textColor="@color/first_red"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/detail_priority2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2순위"
+                android:buttonTint="@color/second_blue"
+                android:textColor="@color/second_blue"
+                android:layout_marginStart="20dp"/>
+            <RadioButton
+                android:id="@+id/detail_priority3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3순위"
+                android:buttonTint="@color/third_yellow"
+                android:textColor="@color/third_yellow"
+                android:layout_marginStart="20dp"/>
+        </RadioGroup>
+    </FrameLayout>
+
+    <!-- 제목: 기본은 TextView, 수정모드에선 EditText -->
+    <FrameLayout
+        android:id="@+id/detail_title_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detail_order_container"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/detail_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="할 일 제목"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"/>
+
+        <EditText
+            android:id="@+id/detail_title_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="할 일 제목"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <!-- 설명: 기본은 TextView, 수정모드에선 EditText -->
+    <FrameLayout
+        android:id="@+id/detail_desc_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/detail_title_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/detail_desc_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="부가 설명"
+            android:textSize="15sp"
+            android:textColor="@color/black"/>
+
+        <EditText
+            android:id="@+id/detail_desc_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="부가 설명"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <!-- 수정 버튼(연필 아이콘) -->
+    <ImageView
+        android:id="@+id/detail_edit_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/baseline_drive_file_rename_outline_24"
+        app:layout_constraintTop_toTopOf="@id/detail_title_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"/>
+
+    <!-- 수정 취소 버튼 (수정모드에서만 보임, 창 닫지 않음) -->
+    <Button
+        android:id="@+id/detail_edit_cancel_btn"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="취소"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/grey"
+        app:layout_constraintTop_toBottomOf="@id/detail_desc_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/detail_modify_btn"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"/>
+
+    <!-- 수정 버튼 (수정모드에서만 보임) -->
+    <Button
+        android:id="@+id/detail_modify_btn"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="수정"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:backgroundTint="#986119"
+        app:layout_constraintTop_toTopOf="@id/detail_edit_cancel_btn"
+        app:layout_constraintStart_toEndOf="@id/detail_edit_cancel_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"/>
+
+    <!-- 완료 취소 버튼 (창 닫힘) -->
+    <Button
+        android:id="@+id/detail_close_btn"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="취소"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/grey"
+        app:layout_constraintTop_toBottomOf="@id/detail_desc_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/detail_complete_btn"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="visible"/>
+
+    <!-- 완료 버튼 (기본상태에서만 보임) -->
+    <Button
+        android:id="@+id/detail_complete_btn"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="완료"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:backgroundTint="#986119"
+        app:layout_constraintTop_toTopOf="@id/detail_close_btn"
+        app:layout_constraintStart_toEndOf="@id/detail_close_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:visibility="visible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

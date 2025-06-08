@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_rect"
+    android:elevation="10dp"
+    android:padding="24dp">
+
+    <!-- 닫기(X) 버튼 -->
+    <ImageView
+        android:id="@+id/todoadd_close_btn"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/baseline_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!-- 타이틀 -->
+    <TextView
+        android:id="@+id/todoadd_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="할 일 생성"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toTopOf="@id/todoadd_priority_group"
+        android:gravity="center"/>
+
+    <!-- 우선순위 선택 (RadioGroup) -->
+    <RadioGroup
+        android:id="@+id/todoadd_priority_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/todoadd_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"
+        android:gravity="center">
+
+        <RadioButton
+            android:id="@+id/todoadd_priority1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1순위"
+            android:buttonTint="@color/first_red"
+            android:textColor="@color/first_red"
+            android:checked="true"/>
+        <RadioButton
+            android:id="@+id/todoadd_priority2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2순위"
+            android:buttonTint="@color/second_blue"
+            android:textColor="@color/second_blue"
+            android:layout_marginStart="20dp"/>
+        <RadioButton
+            android:id="@+id/todoadd_priority3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3순위"
+            android:buttonTint="@color/third_yellow"
+            android:textColor="@color/third_yellow"
+            android:layout_marginStart="20dp"/>
+    </RadioGroup>
+
+    <!-- 할 일 제목 입력 -->
+    <EditText
+        android:id="@+id/todoadd_title_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="할 일을 입력해주세요"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toBottomOf="@id/todoadd_priority_group"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/todoadd_title_input"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- 부가 설명 입력 -->
+    <EditText
+        android:id="@+id/todoadd_desc_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="부가 설명을 입력해주세요"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toBottomOf="@id/todoadd_title_input"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/todoadd_desc_input"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- 생성 버튼 -->
+    <TextView
+        android:id="@+id/todoadd_create_btn"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="생성하기"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:background="@drawable/round_rect"
+        android:backgroundTint="@color/button_yellow"
+        app:layout_constraintTop_toBottomOf="@id/todoadd_desc_input"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

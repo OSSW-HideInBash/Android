@@ -2,4 +2,17 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="unselected">#EAF2FF</color>
+    <color name="selected">#0095FF</color>
+    <color name="yellow">#FFE500</color>
+
+    <color name="first_red_bg">#4DF25B5B</color>
+    <color name="second_blue_bg">#4D0037FF</color>
+    <color name="third_yellow_bg">#4DF2FF00</color>
+    <color name="first_red">#FF0808</color>
+    <color name="second_blue">#1808FF</color>
+    <color name="third_yellow">#FFE500</color>
+
+    <color name="button_yellow">#FFDC85</color>
 </resources>

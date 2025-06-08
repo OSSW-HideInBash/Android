@@ -36,22 +36,19 @@
 
     <ProgressBar
         android:id="@+id/todo_pb"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:progressBackgroundTint="#FBE7C6"
         android:progressDrawable="@drawable/circle_progressbar"
-        android:progressTint="#E5C300"
+        android:indeterminateOnly="false"
+        android:max="100"
+        android:progress="60"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/todo_date_tv"/>
     <ImageView
-        android:layout_width="90dp"
-        android:layout_height="90dp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
         android:src="@drawable/black_circle"
         app:layout_constraintStart_toStartOf="@id/todo_pb"
         app:layout_constraintEnd_toEndOf="@id/todo_pb"
@@ -96,7 +93,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/todo_bar"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="15dp"/>
     <TextView
         android:id="@+id/todo_yet_btn"
         android:layout_width="wrap_content"
@@ -109,9 +106,8 @@
         android:textColor="@color/black"
         android:backgroundTint="@color/selected"
         app:layout_constraintStart_toEndOf="@id/todo_all_btn"
-        app:layout_constraintTop_toBottomOf="@id/todo_bar"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"/>
+        app:layout_constraintTop_toTopOf="@id/todo_all_btn"
+        android:layout_marginStart="10dp" />
     <TextView
         android:id="@+id/todo_done_btn"
         android:layout_width="wrap_content"
@@ -124,9 +120,8 @@
         android:textColor="@color/black"
         android:backgroundTint="@color/unselected"
         app:layout_constraintStart_toEndOf="@id/todo_yet_btn"
-        app:layout_constraintTop_toBottomOf="@id/todo_bar"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"/>
+        app:layout_constraintTop_toTopOf="@id/todo_all_btn"
+        android:layout_marginStart="10dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/todo_recycler_view"

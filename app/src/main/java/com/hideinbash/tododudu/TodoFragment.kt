@@ -132,6 +132,10 @@ class TodoFragment : Fragment() {
             }
             withContext(Dispatchers.Main) {
                 adapter.updateList(todos)
+
+                // 진행률 업데이트
+                val allTodos = db.todoDao().getTodosByDate(dateStr)
+                updateProgressBar(allTodos)
             }
         }
     }
@@ -147,5 +151,15 @@ class TodoFragment : Fragment() {
 
     private fun updateDateUI() {
         binding.todoDateTv.text = currentDate.format(dateFormatter)
+    }
+
+    private fun updateProgressBar(todos: List<Todo>) {
+        val totalCount = todos.size
+        val completedCount = todos.count { it.isCompleted }
+
+        binding.todoPbTv.text = "$completedCount / $totalCount"
+
+        val percent = if (totalCount == 0) 0 else (completedCount * 100 / totalCount)
+        binding.todoPb.progress = percent
     }
 }

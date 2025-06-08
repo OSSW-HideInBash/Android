@@ -59,7 +59,6 @@
 
 ## 🛤 프로젝트 진행 방법
 - GitHub Flow 방식 사용  
-- 브랜치 네이밍: `feature/`, `fix/`, `hotfix/`, `release/`  
 - 이슈 트래킹: GitHub Issues + Projects 사용  
 - 커밋 메시지 컨벤션: Conventional Commits  
   > 예: `[Feat] 게시물 생성 기능 추가`

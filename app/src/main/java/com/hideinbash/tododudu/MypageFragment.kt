@@ -12,11 +12,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.hideinbash.tododudu.databinding.FragmentMypageBinding
@@ -70,13 +73,56 @@ class MypageFragment:Fragment() {
             var dialog = DetailEditDialog(requireContext(),uri)
             dialog.show()
         }
-
-        binding.nicknameTv.text = nickname.toString()
+        setTextListener()
+        binding.nicknameTv.setText(nickname)
 
         return binding.root
     }
 
+    fun setTextListener(){
+        //닉네임 변경 버튼
+        binding.btnNicknameChg.setOnClickListener {
+            binding.nicknameTv.setText("")
+            binding.nicknameTv.isEnabled = true
+            binding.nicknameTv.isFocusableInTouchMode = true
+            binding.nicknameTv.requestFocus()
 
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(binding.nicknameTv, InputMethodManager.SHOW_IMPLICIT)
+        }
+        binding.nicknameTv.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // 완료 버튼 눌렀을 때 처리할 코드
+                binding.nicknameTv.clearFocus()
+                val prefs = requireContext().getSharedPreferences("user_info_data", 0)
+                prefs.edit().putString("nickname",binding.nicknameTv.text.toString()).apply()
+                binding.nicknameTv.isEnabled = false
+                binding.nicknameTv.isFocusable = false
+                // 키보드 내리기
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.nicknameTv.windowToken, 0)
+
+                true
+            } else {
+                false
+            }
+        }
+
+        //닉네임 변경 버튼이 풀렸을 때의 로직
+        binding.nicknameTv.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val prefs = requireContext().getSharedPreferences("user_info_data", 0)
+                prefs.edit().putString("nickname",binding.nicknameTv.text.toString()).apply()
+                binding.nicknameTv.isEnabled = false
+                binding.nicknameTv.isFocusable = false
+
+                // 키보드 내리기
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.nicknameTv.windowToken, 0)
+            }
+        }
+
+    }
     //이미리 저장된 이미지를 받아오기 위해 사용중, 참고로 manifest에 권한 설정을 해야한다.
     private lateinit var imageResultLauncher: ActivityResultLauncher<Intent>
 
@@ -183,55 +229,4 @@ class MypageFragment:Fragment() {
         private const val REQ_GALLERY = 1
     }
 
-    fun uploadImageToFlask() {
-        CoroutineScope(Dispatchers.Main).launch {
-            val loadingDialog = LoadingDialog(requireContext()) // 로딩창 생성
-            loadingDialog.show()
-
-            if (body == null) {
-                loadingDialog.dismiss()
-                Toast.makeText(requireContext(), "이미지가 기본 이미지 입니다", Toast.LENGTH_SHORT).show()
-                return@launch
-            }
-
-            val client = OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .build()
-
-            val requestBody = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addPart(body!!)
-                .build()
-
-            val request = Request.Builder()
-                .url("http://13.55.149.37:5000/gif/inside")
-                .post(requestBody)
-                .build()
-
-            try {
-                // 백그라운드 처리
-                val response = withContext(Dispatchers.IO) {
-                    client.newCall(request).execute()
-                }
-
-                val responseBody = response.body?.string()
-                if (responseBody != null) {
-                    val gifUrl = JSONObject(responseBody).getString("gif_url")
-                    Log.d("gif-test", "응답 성공, $gifUrl")
-                    Glide.with(requireContext())
-                        .load(gifUrl)
-                        .into(binding.defaultCharacterIv)
-                } else {
-                    Log.d("gif-test", "응답 본문이 null입니다.")
-                }
-
-            } catch (e: Exception) {
-                Log.e("gif-test", "에러 발생: ${e.message}")
-            } finally {
-                loadingDialog.dismiss() // 무조건 로딩창 닫기
-            }
-        }
-    }
 }

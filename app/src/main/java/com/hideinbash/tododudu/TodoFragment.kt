@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -63,6 +64,27 @@ class TodoFragment : Fragment() {
                     todo = todo,
                     onComplete = { loadTodosFromRoom() } // DB 작업 후 UI 갱신
                 ).show(parentFragmentManager, "TodoEditDialog")
+            },
+            onDelete = { todo ->
+                // 삭제 확인 다이얼로그
+                AlertDialog.Builder(requireContext())
+                    .setTitle("삭제 확인")
+                    .setMessage("정말 삭제하시겠습니까?")
+                    .setPositiveButton("삭제") { dialog, _ ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val db = TodoDatabase.getInstance(requireContext())
+                            db.todoDao().deleteTodo(todo)
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(requireContext(), "할 일이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                loadTodosFromRoom() // 리스트 새로고침
+                            }
+                        }
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("취소") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
             }
         )
         binding.todoRecyclerView.layoutManager = LinearLayoutManager(requireContext())

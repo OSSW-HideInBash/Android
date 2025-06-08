@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 class TodoAdapter(
     private var items: List<Todo>,
     private val onEdit: (Todo) -> Unit,
-    private val onToggleComplete: (Todo) -> Unit
+    private val onToggleComplete: (Todo) -> Unit,
+    private val onDelete: (Todo) -> Unit
 ) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
@@ -51,6 +52,11 @@ class TodoAdapter(
         holder.editIcon.setOnClickListener {
             onEdit(item)
         }
+
+        // 삭제 아이콘 클릭 리스너 설정
+        holder.deleteIcon.setOnClickListener {
+            onDelete(item)
+        }
     }
 
     override fun getItemCount() = items.size
@@ -59,6 +65,7 @@ class TodoAdapter(
         val orderIcon: ImageView = view.findViewById(R.id.todo_item_order_iv)
         val orderText: TextView = view.findViewById(R.id.todo_item_order_tv)
         val editIcon: ImageView = view.findViewById(R.id.todo_item_fix_iv)
+        val deleteIcon: ImageView = view.findViewById(R.id.todo_item_delete_iv)
         val title: TextView = view.findViewById(R.id.todo_item_title_tv)
         val desc: TextView = view.findViewById(R.id.todo_item_content_tv)
     }

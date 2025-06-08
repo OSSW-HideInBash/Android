@@ -13,6 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class TodoFragment : Fragment() {
 
@@ -22,6 +24,11 @@ class TodoFragment : Fragment() {
     // 현재 선택된 필터 상태
     private enum class FilterType { ALL, YET, DONE }
     private var currentFilter: FilterType = FilterType.YET  // 기본값
+
+    // 날짜 설정
+    private var currentDate: LocalDate = LocalDate.now()
+    private val dateFormatter = DateTimeFormatter.ofPattern("M월 d일")
+    private val dbDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,16 +103,32 @@ class TodoFragment : Fragment() {
         // 초기 데이터 로드
         updateFilterUI()
         loadTodosFromRoom()
+
+        // 날짜 기본값 오늘로 설정
+        updateDateUI()
+
+        // 좌우 화살표 클릭 시 날짜 이동
+        binding.todoArrowLeftIv.setOnClickListener {
+            currentDate = currentDate.minusDays(1)
+            updateDateUI()
+            loadTodosFromRoom()
+        }
+        binding.todoArrowRightIv.setOnClickListener {
+            currentDate = currentDate.plusDays(1)
+            updateDateUI()
+            loadTodosFromRoom()
+        }
     }
 
     private fun loadTodosFromRoom() {
         // RoomDB에서 할 일 목록을 가져와서 어댑터에 설정
         CoroutineScope(Dispatchers.IO).launch {
             val db = TodoDatabase.getInstance(requireContext())
+            val dateStr = currentDate.format(dbDateFormatter)
             val todos = when (currentFilter) {
-                FilterType.ALL -> db.todoDao().getAllTodosRaw()
-                FilterType.YET -> db.todoDao().getIncompleteTodos()
-                FilterType.DONE -> db.todoDao().getCompletedTodos()
+                FilterType.ALL -> db.todoDao().getTodosByDate(dateStr)
+                FilterType.YET -> db.todoDao().getTodosByDate(dateStr).filter { !it.isCompleted }
+                FilterType.DONE -> db.todoDao().getTodosByDate(dateStr).filter { it.isCompleted }
             }
             withContext(Dispatchers.Main) {
                 adapter.updateList(todos)
@@ -120,5 +143,9 @@ class TodoFragment : Fragment() {
             if (currentFilter == FilterType.YET) R.color.selected else R.color.unselected)
         binding.todoDoneBtn.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
             if (currentFilter == FilterType.DONE) R.color.selected else R.color.unselected)
+    }
+
+    private fun updateDateUI() {
+        binding.todoDateTv.text = currentDate.format(dateFormatter)
     }
 }

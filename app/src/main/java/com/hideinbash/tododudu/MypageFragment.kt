@@ -45,18 +45,24 @@ class MypageFragment:Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
-
+        val prefs = requireContext().getSharedPreferences("user_info_data", 0)
+        var nickname = prefs.getString("nickname", "투두두두")
+        var character = prefs.getString("character","https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif")
         Glide.with(this)
-            .load("https://animatedoss.s3.amazonaws.com/f559382c-428c-46d6-973c-8324f3226e88/video.gif") // S3 이미지 URL
+            .load(character) // S3 이미지 URL
             .into(binding.defaultCharacterIv)
         binding.btnImageUpload.setOnClickListener {
             selectGallery()
-
         }
-        binding.btnImageDefault.setOnClickListener {
-            uploadImageToFlask()
+        binding.btnImageDefault.setOnClickListener {//기본 이미지 전환
+            //uploadImageToFlask()
+            val url = "https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif"
+            Glide.with(this)
+                .load(url) // S3 이미지 URL
+                .into(binding.defaultCharacterIv)
+            prefs.edit().putString("character",url).apply()
         }
-        binding.btnDetailEdit.setOnClickListener {
+        binding.btnDetailEdit.setOnClickListener {//스켈레톤 뼈대 커스텀 설정
             /*if(uri == null){
                 Toast.makeText(requireContext(),"기본 이미지 입니다.",Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -65,6 +71,8 @@ class MypageFragment:Fragment() {
             dialog.show()
         }
 
+        binding.nicknameTv.text = nickname.toString()
+
         return binding.root
     }
 
@@ -72,7 +80,14 @@ class MypageFragment:Fragment() {
     //이미리 저장된 이미지를 받아오기 위해 사용중, 참고로 manifest에 권한 설정을 해야한다.
     private lateinit var imageResultLauncher: ActivityResultLauncher<Intent>
 
-
+    //이미지 갱신시, 다시 pref에서 이미지 url을 갖고오게 하는 함수
+    fun getImageByPref(){
+        val prefs = requireContext().getSharedPreferences("user_info_data", 0)
+        var character = prefs.getString("character","https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif")
+        Glide.with(this)
+            .load(character) // S3 이미지 URL
+            .into(binding.defaultCharacterIv)
+    }
 
     private var uri: Uri? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,15 +99,20 @@ class MypageFragment:Fragment() {
                 val imageUri = result.data?.data
                 imageUri?.let {
                     // 이미지를 ImageView에 맞게 로드
-                    binding.defaultCharacterIv.setImageURI(it)
+                    //binding.defaultCharacterIv.setImageURI(it)
                     //아래의 코드로 이제 서버쪽으로 이미지를 보낼 수 있게 해줌.
 
                     uri = it//finish dialog로 사진 정보 넘겨줘야함
                     //갤러리에서 이미지를 받아오면 서버에 넘길 수 있게 바로 제작
                     body = createMultipartBodyFromUri(it, requireContext())
+
                 }
                 Log.d("이미지 변환", "${body}")
-
+                CharacterEditDialog(
+                    uri,
+                    body,
+                    onComplete = { getImageByPref() }
+                ).show(parentFragmentManager, "MyPageImageDialog")
 
             }
         }
@@ -128,7 +148,7 @@ class MypageFragment:Fragment() {
 
 
     private fun selectGallery() {
-        // Android 버전에 따른 권한 확인
+        // Android 버전에 따른 권한 확인x`
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Android 13 (API 33) 이상
             requestPermission(Manifest.permission.READ_MEDIA_IMAGES)
@@ -199,7 +219,7 @@ class MypageFragment:Fragment() {
                 val responseBody = response.body?.string()
                 if (responseBody != null) {
                     val gifUrl = JSONObject(responseBody).getString("gif_url")
-
+                    Log.d("gif-test", "응답 성공, $gifUrl")
                     Glide.with(requireContext())
                         .load(gifUrl)
                         .into(binding.defaultCharacterIv)

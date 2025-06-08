@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hideinbash.tododudu.databinding.FragmentHomeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,8 @@ class HomeFragment:Fragment() {
     private var currentDate: LocalDate = LocalDate.now()
     private val dbDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
+    private lateinit var monsterAdapter: MonsterAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +35,15 @@ class HomeFragment:Fragment() {
         super.onViewCreated(view, savedInstanceState)
         loadXpAndLevel()
         loadTodosFromRoom()
+
+        monsterAdapter = MonsterAdapter(emptyList())
+        binding.homeMonsterRv.layoutManager = LinearLayoutManager(requireContext()).apply {
+            stackFromEnd = true     // 아이템을 아래에서부터 쌓기
+            reverseLayout = false   // 데이터 순서는 그대로
+        }
+        binding.homeMonsterRv.adapter = monsterAdapter
+
+        loadTodosAsMonsters()
     }
 
     private fun loadXpAndLevel() {
@@ -61,5 +73,22 @@ class HomeFragment:Fragment() {
                 binding.homeTodoPb.progress = completedCount
             }
         }
+    }
+
+    private fun loadTodosAsMonsters() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = TodoDatabase.getInstance(requireContext())
+            val dateStr = currentDate.format(dbDateFormatter)
+            val todos = db.todoDao().getYetTodosByDate(dateStr) // 오늘 날짜 기준 할 일 전체
+
+            withContext(Dispatchers.Main) {
+                monsterAdapter.updateList(todos)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadTodosAsMonsters()
     }
 }

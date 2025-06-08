@@ -53,6 +53,14 @@ class TodoFragment : Fragment() {
                     withContext(Dispatchers.Main) {
                         val msg = if (updatedTodo.isCompleted) "완료로 변경되었습니다." else "예정으로 변경되었습니다."
                         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+
+                        // 경험치 추가
+                        if(updatedTodo.isCompleted) {
+                            addXp(20) // 완료 시 20 XP 추가
+                        } else {
+                            addXp(-20) // 예정으로 변경 시 20 XP 차감
+                        }
+
                         loadTodosFromRoom() // 리스트 새로고침
                     }
                 }
@@ -75,6 +83,9 @@ class TodoFragment : Fragment() {
                             val db = TodoDatabase.getInstance(requireContext())
                             db.todoDao().deleteTodo(todo)
                             withContext(Dispatchers.Main) {
+                                if(todo.isCompleted) {
+                                    addXp(-20) // 완료된 할 일 삭제 시 20 XP 차감
+                                }
                                 Toast.makeText(requireContext(), "할 일이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
                                 loadTodosFromRoom() // 리스트 새로고침
                             }
@@ -183,5 +194,24 @@ class TodoFragment : Fragment() {
 
         val percent = if (totalCount == 0) 0 else (completedCount * 100 / totalCount)
         binding.todoPb.progress = percent
+    }
+
+    private fun addXp(amount: Int) {
+        val prefs = requireContext().getSharedPreferences("user_data", 0)
+        var xp = prefs.getInt("xp", 0)
+        var level = prefs.getInt("level", 1)
+        var xpForNext = 100 + (level - 1) * 20 // 레벨업에 필요한 XP 계산
+
+        xp += amount
+        while (xp >= xpForNext) {
+            xp -= xpForNext
+            level++
+            xpForNext = 100 + (level - 1) * 20 // 다음 레벨업에 필요한 XP 계산
+        }
+        prefs.edit()
+            .putInt("xp", xp)
+            .putInt("level", level)
+            .putInt("next_level_xp", xpForNext)
+            .apply()
     }
 }

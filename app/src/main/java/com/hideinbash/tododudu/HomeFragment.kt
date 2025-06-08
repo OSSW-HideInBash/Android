@@ -1,11 +1,13 @@
 package com.hideinbash.tododudu
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.hideinbash.tododudu.databinding.FragmentHomeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +36,7 @@ class HomeFragment:Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadAllData()
-
+        Log.d("onViewCheck", "check")
         monsterAdapter = MonsterAdapter(
             items = emptyList(),
             onItemClick = { todo ->
@@ -55,11 +57,17 @@ class HomeFragment:Fragment() {
 
     private fun loadAllData() {
         CoroutineScope(Dispatchers.IO).launch {
+
+
             // 1. XP & 레벨 데이터 (SharedPreferences)
             val prefs = requireContext().getSharedPreferences("user_data", 0)
             val xp = prefs.getInt("xp", 0)
             val level = prefs.getInt("level", 1)
             val xpForNext = 100 + (level - 1) * 20
+
+            // 1-1. 마이페이지의 닉네임과 캐릭터 정보
+            val info_prefs = requireContext().getSharedPreferences("user_info_data", 0)
+            val character = info_prefs.getString("character","https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif")
 
             // 2. 할 일 데이터 (RoomDB)
             val db = TodoDatabase.getInstance(requireContext())
@@ -81,6 +89,11 @@ class HomeFragment:Fragment() {
 
                 // 몬스터 리스트
                 monsterAdapter.updateList(yetTodos)
+
+                //메인 캐릭터 이미지
+                Glide.with(requireContext())
+                    .load(character) // S3 이미지 URL
+                    .into(binding.homeMainCharacterIv)
             }
         }
     }

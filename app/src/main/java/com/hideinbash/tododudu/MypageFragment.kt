@@ -12,11 +12,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.hideinbash.tododudu.databinding.FragmentMypageBinding
@@ -45,18 +48,24 @@ class MypageFragment:Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
-
+        val prefs = requireContext().getSharedPreferences("user_info_data", 0)
+        var nickname = prefs.getString("nickname", "투두두두")
+        var character = prefs.getString("character","https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif")
         Glide.with(this)
-            .load("https://animatedoss.s3.amazonaws.com/f559382c-428c-46d6-973c-8324f3226e88/video.gif") // S3 이미지 URL
+            .load(character) // S3 이미지 URL
             .into(binding.defaultCharacterIv)
         binding.btnImageUpload.setOnClickListener {
             selectGallery()
-
         }
-        binding.btnImageDefault.setOnClickListener {
-            uploadImageToFlask()
+        binding.btnImageDefault.setOnClickListener {//기본 이미지 전환
+            //uploadImageToFlask()
+            val url = "https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif"
+            Glide.with(this)
+                .load(url) // S3 이미지 URL
+                .into(binding.defaultCharacterIv)
+            prefs.edit().putString("character",url).apply()
         }
-        binding.btnDetailEdit.setOnClickListener {
+        binding.btnDetailEdit.setOnClickListener {//스켈레톤 뼈대 커스텀 설정
             /*if(uri == null){
                 Toast.makeText(requireContext(),"기본 이미지 입니다.",Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -64,15 +73,67 @@ class MypageFragment:Fragment() {
             var dialog = DetailEditDialog(requireContext(),uri)
             dialog.show()
         }
+        setTextListener()
+        binding.nicknameTv.setText(nickname)
 
         return binding.root
     }
 
+    fun setTextListener(){
+        //닉네임 변경 버튼
+        binding.btnNicknameChg.setOnClickListener {
+            binding.nicknameTv.setText("")
+            binding.nicknameTv.isEnabled = true
+            binding.nicknameTv.isFocusableInTouchMode = true
+            binding.nicknameTv.requestFocus()
 
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(binding.nicknameTv, InputMethodManager.SHOW_IMPLICIT)
+        }
+        binding.nicknameTv.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // 완료 버튼 눌렀을 때 처리할 코드
+                binding.nicknameTv.clearFocus()
+                val prefs = requireContext().getSharedPreferences("user_info_data", 0)
+                prefs.edit().putString("nickname",binding.nicknameTv.text.toString()).apply()
+                binding.nicknameTv.isEnabled = false
+                binding.nicknameTv.isFocusable = false
+                // 키보드 내리기
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.nicknameTv.windowToken, 0)
+
+                true
+            } else {
+                false
+            }
+        }
+
+        //닉네임 변경 버튼이 풀렸을 때의 로직
+        binding.nicknameTv.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val prefs = requireContext().getSharedPreferences("user_info_data", 0)
+                prefs.edit().putString("nickname",binding.nicknameTv.text.toString()).apply()
+                binding.nicknameTv.isEnabled = false
+                binding.nicknameTv.isFocusable = false
+
+                // 키보드 내리기
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.nicknameTv.windowToken, 0)
+            }
+        }
+
+    }
     //이미리 저장된 이미지를 받아오기 위해 사용중, 참고로 manifest에 권한 설정을 해야한다.
     private lateinit var imageResultLauncher: ActivityResultLauncher<Intent>
 
-
+    //이미지 갱신시, 다시 pref에서 이미지 url을 갖고오게 하는 함수
+    fun getImageByPref(){
+        val prefs = requireContext().getSharedPreferences("user_info_data", 0)
+        var character = prefs.getString("character","https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif")
+        Glide.with(this)
+            .load(character) // S3 이미지 URL
+            .into(binding.defaultCharacterIv)
+    }
 
     private var uri: Uri? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,15 +145,20 @@ class MypageFragment:Fragment() {
                 val imageUri = result.data?.data
                 imageUri?.let {
                     // 이미지를 ImageView에 맞게 로드
-                    binding.defaultCharacterIv.setImageURI(it)
+                    //binding.defaultCharacterIv.setImageURI(it)
                     //아래의 코드로 이제 서버쪽으로 이미지를 보낼 수 있게 해줌.
 
                     uri = it//finish dialog로 사진 정보 넘겨줘야함
                     //갤러리에서 이미지를 받아오면 서버에 넘길 수 있게 바로 제작
                     body = createMultipartBodyFromUri(it, requireContext())
+
                 }
                 Log.d("이미지 변환", "${body}")
-
+                CharacterEditDialog(
+                    uri,
+                    body,
+                    onComplete = { getImageByPref() }
+                ).show(parentFragmentManager, "MyPageImageDialog")
 
             }
         }
@@ -128,7 +194,7 @@ class MypageFragment:Fragment() {
 
 
     private fun selectGallery() {
-        // Android 버전에 따른 권한 확인
+        // Android 버전에 따른 권한 확인x`
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Android 13 (API 33) 이상
             requestPermission(Manifest.permission.READ_MEDIA_IMAGES)
@@ -163,55 +229,4 @@ class MypageFragment:Fragment() {
         private const val REQ_GALLERY = 1
     }
 
-    fun uploadImageToFlask() {
-        CoroutineScope(Dispatchers.Main).launch {
-            val loadingDialog = LoadingDialog(requireContext()) // 로딩창 생성
-            loadingDialog.show()
-
-            if (body == null) {
-                loadingDialog.dismiss()
-                Toast.makeText(requireContext(), "이미지가 기본 이미지 입니다", Toast.LENGTH_SHORT).show()
-                return@launch
-            }
-
-            val client = OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .build()
-
-            val requestBody = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addPart(body!!)
-                .build()
-
-            val request = Request.Builder()
-                .url("http://13.55.149.37:5000/gif/inside")
-                .post(requestBody)
-                .build()
-
-            try {
-                // 백그라운드 처리
-                val response = withContext(Dispatchers.IO) {
-                    client.newCall(request).execute()
-                }
-
-                val responseBody = response.body?.string()
-                if (responseBody != null) {
-                    val gifUrl = JSONObject(responseBody).getString("gif_url")
-
-                    Glide.with(requireContext())
-                        .load(gifUrl)
-                        .into(binding.defaultCharacterIv)
-                } else {
-                    Log.d("gif-test", "응답 본문이 null입니다.")
-                }
-
-            } catch (e: Exception) {
-                Log.e("gif-test", "에러 발생: ${e.message}")
-            } finally {
-                loadingDialog.dismiss() // 무조건 로딩창 닫기
-            }
-        }
-    }
 }

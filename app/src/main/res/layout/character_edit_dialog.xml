@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/mypage_wood_bg"
+    android:padding="24dp">
+
+    <ImageView
+        android:id="@+id/default_character_iv"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/mypage_default_char"
+        />
+    <TextView
+        android:id="@+id/btn_char_conversion_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사진 전환"
+        android:textSize="28dp"
+        android:fontFamily="@font/dos_gothic"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/default_character_iv"
+        android:background="@drawable/mypage_mainbtn_bg"/>
+    <TextView
+        android:id="@+id/btn_char_save_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="캐릭터 저장"
+        android:textSize="28dp"
+        android:fontFamily="@font/dos_gothic"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_char_conversion_btn"
+        android:background="@drawable/mypage_mainbtn_bg"/>
+    <!-- 닫기(X) 버튼 -->
+    <ImageView
+        android:id="@+id/edit_dialog_close_btn"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/baseline_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

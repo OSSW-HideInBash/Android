@@ -1,7 +1,7 @@
 # 📱 투두두두 (Hide in Bash)
 
 ## 📝 프로젝트 개요
-![캐릭터 이미지]([https://your-bucket.s3.amazonaws.com/demo.gif](https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif))
+![캐릭터 애니메이션 시연](https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif)
 이 프로젝트는 [Facebook Research의 AnimatedDrawings](https://github.com/facebookresearch/AnimatedDrawings) 라이브러리를 기반으로 애니메이션 기능을 구현하였습니다.
 
 투두두두는 자신만의 캐릭터를 제작하여, 자신의 목표를 게임의 퀘스트처럼 진행하는 자신만의 커스텀 투두리스트입니다.

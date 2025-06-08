@@ -47,6 +47,9 @@ class CharacterEditDialog(
         binding.btnCharSaveBtn.setOnClickListener {
             saveAtPref()
         }
+        binding.editDialogCloseBtn.setOnClickListener {
+            dismiss()
+        }
 
         return binding.root
     }

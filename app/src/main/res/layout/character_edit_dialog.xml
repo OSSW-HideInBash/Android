@@ -45,5 +45,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_char_conversion_btn"
         android:background="@drawable/mypage_mainbtn_bg"/>
-
+    <!-- 닫기(X) 버튼 -->
+    <ImageView
+        android:id="@+id/edit_dialog_close_btn"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/baseline_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

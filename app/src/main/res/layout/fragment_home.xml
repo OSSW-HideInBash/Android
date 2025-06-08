@@ -90,7 +90,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/home_main_character_iv"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="40dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

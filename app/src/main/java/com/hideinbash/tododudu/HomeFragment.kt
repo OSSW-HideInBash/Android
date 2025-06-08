@@ -33,62 +33,60 @@ class HomeFragment:Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadXpAndLevel()
-        loadTodosFromRoom()
+        loadAllData()
 
-        monsterAdapter = MonsterAdapter(emptyList())
+        monsterAdapter = MonsterAdapter(
+            items = emptyList(),
+            onItemClick = { todo ->
+                // 할 일 아이템 클릭 시 처리
+                HomeDetailDialogFragment.newInstance(todo) {
+                    loadAllData()
+                }.show(parentFragmentManager, "HomeDetailDialog")
+            }
+        )
         binding.homeMonsterRv.layoutManager = LinearLayoutManager(requireContext()).apply {
             stackFromEnd = true     // 아이템을 아래에서부터 쌓기
             reverseLayout = false   // 데이터 순서는 그대로
         }
         binding.homeMonsterRv.adapter = monsterAdapter
 
-        loadTodosAsMonsters()
+        loadAllData()
     }
 
-    private fun loadXpAndLevel() {
-        val prefs = requireContext().getSharedPreferences("user_data", 0)
-        val xp = prefs.getInt("xp", 0)
-        val level = prefs.getInt("level", 1)
-        var xpForNext = 100 + (level - 1) * 20 // 레벨업에 필요한 XP 계산
-
-        binding.homeLevelTv.text = "Lv. $level"
-        binding.homeXpPb.max = xpForNext
-        binding.homeXpPb.progress = xp
-    }
-
-    private fun loadTodosFromRoom() {
+    private fun loadAllData() {
         CoroutineScope(Dispatchers.IO).launch {
+            // 1. XP & 레벨 데이터 (SharedPreferences)
+            val prefs = requireContext().getSharedPreferences("user_data", 0)
+            val xp = prefs.getInt("xp", 0)
+            val level = prefs.getInt("level", 1)
+            val xpForNext = 100 + (level - 1) * 20
+
+            // 2. 할 일 데이터 (RoomDB)
             val db = TodoDatabase.getInstance(requireContext())
             val dateStr = currentDate.format(dbDateFormatter)
-            val todos = db.todoDao().getTodosByDate(dateStr) // 오늘 날짜 기준 할 일 전체
+            val allTodos = db.todoDao().getTodosByDate(dateStr)
+            val yetTodos = db.todoDao().getYetTodosByDate(dateStr)
 
-            val totalCount = todos.size
-            val completedCount = todos.count { it.isCompleted }
-
+            // 3. 메인 스레드에서 UI 업데이트
             withContext(Dispatchers.Main) {
-                // 진행률 업데이트
-                binding.homeTodoTv.text = "$completedCount / $totalCount"
-                binding.homeTodoPb.max = totalCount
-                binding.homeTodoPb.progress = completedCount
-            }
-        }
-    }
+                // XP & 레벨
+                binding.homeLevelTv.text = "Lv. $level"
+                binding.homeXpPb.max = xpForNext
+                binding.homeXpPb.progress = xp
 
-    private fun loadTodosAsMonsters() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val db = TodoDatabase.getInstance(requireContext())
-            val dateStr = currentDate.format(dbDateFormatter)
-            val todos = db.todoDao().getYetTodosByDate(dateStr) // 오늘 날짜 기준 할 일 전체
+                // 할 일 진행률
+                binding.homeTodoTv.text = "${allTodos.count { it.isCompleted }} / ${allTodos.size}"
+                binding.homeTodoPb.max = allTodos.size
+                binding.homeTodoPb.progress = allTodos.count { it.isCompleted }
 
-            withContext(Dispatchers.Main) {
-                monsterAdapter.updateList(todos)
+                // 몬스터 리스트
+                monsterAdapter.updateList(yetTodos)
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        loadTodosAsMonsters()
+        loadAllData()
     }
 }

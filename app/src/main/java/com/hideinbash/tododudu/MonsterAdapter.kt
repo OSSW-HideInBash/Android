@@ -7,8 +7,10 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 
-class MonsterAdapter(private var items: List<Todo>) :
-    RecyclerView.Adapter<MonsterAdapter.MonsterViewHolder>() {
+class MonsterAdapter(
+    private var items: List<Todo>,
+    private val onItemClick: (Todo) -> Unit
+) : RecyclerView.Adapter<MonsterAdapter.MonsterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonsterViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_monster, parent, false)
@@ -30,6 +32,11 @@ class MonsterAdapter(private var items: List<Todo>) :
         val layoutParams = holder.monsterIv.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.horizontalBias = (0..100).random() / 100f
         holder.monsterIv.layoutParams = layoutParams
+
+        // 아이템 클릭 리스너 설정
+        holder.monsterIv.setOnClickListener {
+            onItemClick(item)
+        }
     }
 
     override fun getItemCount() = items.size

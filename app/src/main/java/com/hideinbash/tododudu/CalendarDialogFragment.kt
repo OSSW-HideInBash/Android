@@ -38,6 +38,9 @@ class CalendarDialogFragment(
         val calendarView = binding.calendarView
 
         // 캘린더 초기 설정
+        calendarView.currentDate = CalendarDay.from(
+            selectedDate.year, selectedDate.monthValue, selectedDate.dayOfMonth
+        )
         val initialMonth = binding.calendarView.currentDate
         loadAndDecorateMonth(initialMonth.year, initialMonth.month)
 

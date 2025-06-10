@@ -107,8 +107,8 @@
         android:background="@drawable/round_rect"
         android:paddingHorizontal="24dp"
         android:paddingVertical="8dp"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/brown_button"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/button_yellow"
         app:layout_constraintStart_toEndOf="@id/todo_all_btn"
         app:layout_constraintTop_toTopOf="@id/todo_all_btn"
         android:layout_marginStart="10dp" />

@@ -175,22 +175,11 @@ class TodoFragment : Fragment() {
 
     private fun updateFilterUI() {
         binding.todoAllBtn.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
-            if (currentFilter == FilterType.ALL) R.color.brown_button else R.color.white)
+            if (currentFilter == FilterType.ALL) R.color.button_yellow else R.color.white)
         binding.todoYetBtn.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
-            if (currentFilter == FilterType.YET) R.color.brown_button else R.color.white)
+            if (currentFilter == FilterType.YET) R.color.button_yellow else R.color.white)
         binding.todoDoneBtn.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
-            if (currentFilter == FilterType.DONE) R.color.brown_button else R.color.white)
-
-        // 글자색 변경
-        binding.todoAllBtn.setTextColor(
-            ContextCompat.getColor(requireContext(),
-                if (currentFilter == FilterType.ALL) R.color.white else R.color.black))
-        binding.todoYetBtn.setTextColor(
-            ContextCompat.getColor(requireContext(),
-                if (currentFilter == FilterType.YET) R.color.white else R.color.black))
-        binding.todoDoneBtn.setTextColor(
-            ContextCompat.getColor(requireContext(),
-                if (currentFilter == FilterType.DONE) R.color.white else R.color.black))
+            if (currentFilter == FilterType.DONE) R.color.button_yellow else R.color.white)
     }
 
     private fun updateDateUI() {

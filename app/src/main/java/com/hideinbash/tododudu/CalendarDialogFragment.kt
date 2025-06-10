@@ -10,6 +10,10 @@ import com.hideinbash.tododudu.databinding.FragmentCalendarDialogBinding
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 class CalendarDialogFragment(
@@ -32,6 +36,9 @@ class CalendarDialogFragment(
         super.onViewCreated(view, savedInstanceState)
 
         val calendarView = binding.calendarView
+
+        val initialMonth = binding.calendarView.currentDate
+        loadAndDecorateMonth(initialMonth.year, initialMonth.month)
 
         // 선택된 날짜 표시
         calendarView.selectedDate = CalendarDay.from(
@@ -66,6 +73,48 @@ class CalendarDialogFragment(
         calendarView.setOnDateChangedListener { _, date, _ ->
             onDateSelected(date.year, date.month, date.day)
             dismiss()
+        }
+
+        // 월 변경 리스너
+        binding.calendarView.setOnMonthChangedListener { _, date ->
+            val year = date.year
+            val month = date.month
+            loadAndDecorateMonth(year, month)
+        }
+    }
+
+    private fun loadAndDecorateMonth(year: Int, month: Int) {
+        val firstDay = LocalDate.of(year, month, 1)
+        val lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth())
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = TodoDatabase.getInstance(requireContext())
+            val todos = db.todoDao().getTodosBetweenDates(
+                firstDay.toString(), lastDay.toString()
+            )
+            val daysWithYetTodos = todos.filter { !it.isCompleted }
+                .map { it.date }
+                .toSet()
+
+            withContext(Dispatchers.Main) {
+                binding.calendarView.removeDecorators()     // 기존 decorator 제거
+
+                // Decorator 추가
+                binding.calendarView.addDecorator(object : DayViewDecorator {
+                    override fun shouldDecorate(day: CalendarDay): Boolean {
+                        val dateStr = "%04d-%02d-%02d".format(day.year, day.month, day.day)
+                        return daysWithYetTodos.contains(dateStr)
+                    }
+                    override fun decorate(view: DayViewFacade) {
+                        view.addSpan(
+                            com.prolificinteractive.materialcalendarview.spans.DotSpan(
+                                8f,
+                                ContextCompat.getColor(requireContext(), R.color.button_yellow)
+                            )
+                        )
+                    }
+                })
+            }
         }
     }
 

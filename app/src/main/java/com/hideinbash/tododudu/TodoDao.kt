@@ -1,6 +1,5 @@
 package com.hideinbash.tododudu
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.*
 
@@ -20,4 +19,7 @@ interface TodoDao {
 
     @Query("SELECT * FROM todo WHERE date = :date AND isCompleted = 0 ORDER BY priority DESC")
     suspend fun getYetTodosByDate(date: String): List<Todo>
+
+    @Query("SELECT * FROM todo WHERE date BETWEEN :startDate AND :endDate")
+    suspend fun getTodosBetweenDates(startDate: String, endDate: String): List<Todo>
 }

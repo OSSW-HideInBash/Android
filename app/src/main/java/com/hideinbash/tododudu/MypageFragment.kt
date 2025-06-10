@@ -229,4 +229,12 @@ class MypageFragment:Fragment() {
         private const val REQ_GALLERY = 1
     }
 
+    override fun onResume() {
+        super.onResume()
+        // sharedprefrence에서 레벨 정보 가져와서 적용
+        val prefs = requireContext().getSharedPreferences("user_data", 0)
+        val level = prefs.getInt("level", 1)
+        binding.levelTv.text = "Lv. $level"
+    }
+
 }

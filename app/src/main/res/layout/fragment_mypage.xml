@@ -77,7 +77,7 @@
         android:id="@+id/level_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lv.1"
+        android:text="Lv. 1"
         android:fontFamily="@font/dos_myungjo"
         android:textSize="28dp"
         android:gravity="center"

@@ -14,32 +14,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.hideinbash.tododudu.databinding.FragmentMypageBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
-import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
-import java.util.concurrent.TimeUnit
 
 class MypageFragment:Fragment() {
     private var _binding: FragmentMypageBinding? = null
     private val binding get() = _binding!!
+
     //이미지 전송할때, requestbody용
     private var body : MultipartBody.Part? = null
 

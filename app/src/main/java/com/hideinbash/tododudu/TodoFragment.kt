@@ -70,7 +70,8 @@ class TodoFragment : Fragment() {
                 TodoAddDialogFragment(
                     mode = TodoAddDialogFragment.Mode.EDIT,
                     todo = todo,
-                    onComplete = { loadTodosFromRoom() } // DB 작업 후 UI 갱신
+                    onComplete = { loadTodosFromRoom() }, // DB 작업 후 UI 갱신
+                    date = currentDate.format(dbDateFormatter) // 현재 날짜 전달
                 ).show(parentFragmentManager, "TodoEditDialog")
             },
             onDelete = { todo ->
@@ -129,7 +130,8 @@ class TodoFragment : Fragment() {
         binding.todoAddBtn.setOnClickListener {
             TodoAddDialogFragment(
                 mode = TodoAddDialogFragment.Mode.CREATE,
-                onComplete = { loadTodosFromRoom() } // DB 작업 후 UI 갱신
+                onComplete = { loadTodosFromRoom() }, // DB 작업 후 UI 갱신
+                date = currentDate.format(dbDateFormatter)
             ).show(parentFragmentManager, "TodoAddDialog")
         }
 

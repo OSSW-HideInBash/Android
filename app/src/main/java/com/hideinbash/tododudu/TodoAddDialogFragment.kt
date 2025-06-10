@@ -13,7 +13,8 @@ import kotlinx.coroutines.launch
 class TodoAddDialogFragment(
     private val mode: Mode = Mode.CREATE,
     private val todo: Todo? = null, // 수정 모드일 때 기존 Todo 객체를 전달
-    private val onComplete: (() -> Unit)? = null // DB 작업 후 UI 갱신용 콜백
+    private val onComplete: (() -> Unit)? = null, // DB 작업 후 UI 갱신용 콜백
+    private val date: String
 ) : DialogFragment() {
 
     lateinit var binding: FragmentTodoAddDialogBinding
@@ -59,7 +60,11 @@ class TodoAddDialogFragment(
                 else -> 3 // 기본값으로 최하위 우선순위 설정
             }
 
-            val date = "2025-06-08" // 예시 날짜, 실제로는 현재 날짜로 설정해야 함
+            val todoDate = if (mode == Mode.EDIT && todo != null) {
+                todo.date // 수정 모드면 기존 날짜 유지
+            } else {
+                date // 생성 모드면 전달받은 날짜 사용
+            }
 
             // RoomDB에 저장
             CoroutineScope(Dispatchers.IO).launch {
@@ -78,7 +83,7 @@ class TodoAddDialogFragment(
                         title = title,
                         description = desc,
                         priority = priority,
-                        date = date
+                        date = todoDate
                     )
                     db.todoDao().insertTodo(newTodo)
                 }

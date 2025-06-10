@@ -151,6 +151,18 @@ class TodoFragment : Fragment() {
             updateDateUI()
             loadTodosFromRoom()
         }
+
+        // 날짜 클릭 시 날짜 선택 다이얼로그 표시
+        binding.todoDateTv.setOnClickListener {
+            CalendarDialogFragment(
+                selectedDate = currentDate,
+                onDateSelected = { year, month, day ->
+                    currentDate = LocalDate.of(year, month, day)
+                    updateDateUI()
+                    loadTodosFromRoom()
+                }
+            ).show(parentFragmentManager, "CalendarDialog")
+        }
     }
 
     private fun loadTodosFromRoom() {

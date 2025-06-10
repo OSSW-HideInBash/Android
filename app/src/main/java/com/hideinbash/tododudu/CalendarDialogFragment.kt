@@ -37,6 +37,7 @@ class CalendarDialogFragment(
 
         val calendarView = binding.calendarView
 
+        // 캘린더 초기 설정
         val initialMonth = binding.calendarView.currentDate
         loadAndDecorateMonth(initialMonth.year, initialMonth.month)
 
@@ -44,30 +45,6 @@ class CalendarDialogFragment(
         calendarView.selectedDate = CalendarDay.from(
             selectedDate.year, selectedDate.monthValue, selectedDate.dayOfMonth
         )
-
-        val redColor = ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark)
-        val yellowColor = ContextCompat.getColor(requireContext(), R.color.button_yellow)
-        val today = CalendarDay.today()
-
-        // 오늘 날짜 빨간 글씨 decorator
-        calendarView.addDecorator(object : DayViewDecorator {
-            override fun shouldDecorate(day: CalendarDay): Boolean = day == today
-            override fun decorate(view: DayViewFacade) {
-                view.addSpan(android.text.style.ForegroundColorSpan(redColor))
-            }
-        })
-
-        // 선택된 날짜 노란 배경 decorator
-        calendarView.addDecorator(object : DayViewDecorator {
-            override fun shouldDecorate(day: CalendarDay): Boolean =
-                day.year == selectedDate.year &&
-                        day.month == selectedDate.monthValue - 1 &&
-                        day.day == selectedDate.dayOfMonth
-
-            override fun decorate(view: DayViewFacade) {
-                view.addSpan(android.text.style.BackgroundColorSpan(yellowColor))
-            }
-        })
 
         // 날짜 선택 콜백
         calendarView.setOnDateChangedListener { _, date, _ ->
@@ -87,6 +64,11 @@ class CalendarDialogFragment(
         val firstDay = LocalDate.of(year, month, 1)
         val lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth())
 
+        val today = CalendarDay.today()
+        val redColor = ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark)
+        val yellowColor = ContextCompat.getColor(requireContext(), R.color.button_yellow)
+
+
         CoroutineScope(Dispatchers.IO).launch {
             val db = TodoDatabase.getInstance(requireContext())
             val todos = db.todoDao().getTodosBetweenDates(
@@ -99,7 +81,27 @@ class CalendarDialogFragment(
             withContext(Dispatchers.Main) {
                 binding.calendarView.removeDecorators()     // 기존 decorator 제거
 
-                // Decorator 추가
+                // 오늘 날짜 빨간 글씨 decorator
+                binding.calendarView.addDecorator(object : DayViewDecorator {
+                    override fun shouldDecorate(day: CalendarDay): Boolean = day == today
+                    override fun decorate(view: DayViewFacade) {
+                        view.addSpan(android.text.style.ForegroundColorSpan(redColor))
+                    }
+                })
+
+                // 선택된 날짜 노란 배경 decorator
+                binding.calendarView.addDecorator(object : DayViewDecorator {
+                    override fun shouldDecorate(day: CalendarDay): Boolean =
+                        day.year == selectedDate.year &&
+                                day.month == selectedDate.monthValue &&
+                                day.day == selectedDate.dayOfMonth
+
+                    override fun decorate(view: DayViewFacade) {
+                        view.addSpan(android.text.style.BackgroundColorSpan(yellowColor))
+                    }
+                })
+
+                // 할 일이 있는 날짜에 노란 점 decorator
                 binding.calendarView.addDecorator(object : DayViewDecorator {
                     override fun shouldDecorate(day: CalendarDay): Boolean {
                         val dateStr = "%04d-%02d-%02d".format(day.year, day.month, day.day)

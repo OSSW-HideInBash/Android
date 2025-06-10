@@ -25,10 +25,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu"
-        android:background="@color/white"
-        app:itemBackground="@color/white"
-        app:itemIconTint="@android:color/black"
-        app:itemRippleColor="@android:color/white"
-        app:itemTextColor="@android:color/black"/>
+        android:background="@color/black"
+        app:itemBackground="@color/black"
+        app:itemIconTint="@color/bottom_nav_selector"
+        app:itemRippleColor="@android:color/transparent"
+        app:itemActiveIndicatorStyle="@android:color/transparent"
+        app:itemTextColor="@android:color/white"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

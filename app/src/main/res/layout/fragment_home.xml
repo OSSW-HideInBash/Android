@@ -24,7 +24,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:max="100"
         android:progress="40"
-        android:progressTint="@color/yellow"
+        android:progressTint="@color/third_yellow"
         android:progressBackgroundTint="@color/white"
         android:scaleY="3"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:text="Lv. nn"
         android:textStyle="bold"
-        android:textColor="@color/yellow"
+        android:textColor="@color/third_yellow"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/home_xp_pb"
         app:layout_constraintStart_toStartOf="@id/home_xp_pb"/>
@@ -77,7 +77,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="n / n"
-            android:textColor="@color/yellow"
+            android:textColor="@color/third_yellow"
             android:textSize="20sp"
             android:textStyle="bold"/>
     </FrameLayout>

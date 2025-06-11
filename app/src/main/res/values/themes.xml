@@ -5,5 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.ToDodudu" parent="Base.Theme.ToDodudu" />
+    <style name="Theme.ToDodudu" parent="Base.Theme.ToDodudu">
+        <item name="android:windowBackground">@color/black</item>
+    </style>
 </resources>

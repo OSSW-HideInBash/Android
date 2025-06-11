@@ -28,11 +28,6 @@ class MonsterAdapter(
         }
         holder.monsterIv.setImageResource(monsterRes)
 
-        // 좌우 랜덤 위치 지정
-        val layoutParams = holder.monsterIv.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.horizontalBias = (0..100).random() / 100f
-        holder.monsterIv.layoutParams = layoutParams
-
         // 아이템 클릭 리스너 설정
         holder.monsterIv.setOnClickListener {
             onItemClick(item)

@@ -36,7 +36,6 @@ class HomeFragment:Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadAllData()
-        Log.d("onViewCheck", "check")
         monsterAdapter = MonsterAdapter(
             items = emptyList(),
             onItemClick = { todo ->
@@ -46,10 +45,20 @@ class HomeFragment:Fragment() {
                 }.show(parentFragmentManager, "HomeDetailDialog")
             }
         )
-        binding.homeMonsterRv.layoutManager = LinearLayoutManager(requireContext()).apply {
-            stackFromEnd = true     // 아이템을 아래에서부터 쌓기
-            reverseLayout = false   // 데이터 순서는 그대로
-        }
+
+        // 1. 패턴 정의
+        val pattern = listOf(
+            0.65f to 0.9f,
+            0.35f to 0.75f,
+            0.85f to 0.6f,
+            0.2f to 0.45f,
+            0.55f to 0.3f
+        )
+        // 2. 아이템 크기(px) 계산
+        val itemPx = (100 * resources.displayMetrics.density).toInt() // 100dp → px 변환
+        // 3. 커스텀 LayoutManager 적용
+        binding.homeMonsterRv.layoutManager = MonsterPatternLayoutManager(pattern, itemPx, itemPx)
+        // 4. 어댑터 연결
         binding.homeMonsterRv.adapter = monsterAdapter
 
 

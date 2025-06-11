@@ -45,7 +45,7 @@ class CharacterEditDialog(
             uploadImageToFlask()
         }
         binding.btnCharSaveBtn.setOnClickListener {
-            saveAtPref()
+            //saveAtPref()
         }
         binding.editDialogCloseBtn.setOnClickListener {
             dismiss()
@@ -54,16 +54,7 @@ class CharacterEditDialog(
         return binding.root
     }
 
-    fun saveAtPref(){
-        if(url == null){
-            Toast.makeText(requireContext(), "애니메이션이 전환되지 않았습니다", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val prefs = requireContext().getSharedPreferences("user_info_data", 0)
-        prefs.edit().putString("character",url).apply()
-        onComplete?.invoke()
-        dismiss()
-    }
+
 
     fun uploadImageToFlask() {
         CoroutineScope(Dispatchers.Main).launch {

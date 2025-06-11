@@ -35,6 +35,12 @@ class MonsterPatternLayoutManager(
         val totalGroups = (itemCount + patternSize - 1) / patternSize
         val totalHeight = totalGroups * groupHeight
 
+        // 아래에서 시작하도록 verticalOffset을 최대값으로 설정
+        val maxOffset = (totalHeight - height).coerceAtLeast(0)
+        if (verticalOffset == 0) {
+            verticalOffset = maxOffset
+        }
+
         // 아래(리스트 끝)부터 아이템을 배치
         for (i in 0 until itemCount) {
             val reverseIndex = itemCount - 1 - i

@@ -20,6 +20,13 @@ class TodoAddDialogFragment(
     lateinit var binding: FragmentTodoAddDialogBinding
     enum class Mode { CREATE, EDIT }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // DialogFragment의 배경을 투명하게 설정
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

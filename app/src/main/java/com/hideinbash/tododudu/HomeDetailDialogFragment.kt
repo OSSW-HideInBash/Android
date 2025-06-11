@@ -51,6 +51,9 @@ class HomeDetailDialogFragment() : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setDefaultUI()
 
+        // 배경 투명하게 설정
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
         // 수정 버튼 클릭 시 수정 모드 진입
         binding.detailEditBtn.setOnClickListener { enterEditMode() }
 

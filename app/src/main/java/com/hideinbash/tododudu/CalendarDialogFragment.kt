@@ -37,6 +37,9 @@ class CalendarDialogFragment(
 
         val calendarView = binding.calendarView
 
+        // 배경 투명하게 설정
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
         // 캘린더 초기 설정
         calendarView.currentDate = CalendarDay.from(
             selectedDate.year, selectedDate.monthValue, selectedDate.dayOfMonth

@@ -40,8 +40,8 @@
 
         <ImageView
             android:id="@+id/todo_item_fix_iv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:src="@drawable/baseline_drive_file_rename_outline_24"
             app:layout_constraintEnd_toStartOf="@id/todo_item_delete_iv"
             app:layout_constraintTop_toTopOf="parent"
@@ -51,8 +51,8 @@
 
         <ImageView
             android:id="@+id/todo_item_delete_iv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:src="@drawable/baseline_delete_outline_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

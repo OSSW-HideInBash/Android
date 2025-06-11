@@ -24,22 +24,22 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:max="100"
         android:progress="40"
-        android:progressTint="@color/yellow"
+        android:progressTint="@color/third_yellow"
         android:progressBackgroundTint="@color/white"
         android:scaleY="3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/home_add_btn"
         android:layout_marginBottom="20dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="80dp"/>
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="10dp"/>
     <TextView
         android:id="@+id/home_level_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lv. nn"
         android:textStyle="bold"
-        android:textColor="@color/yellow"
+        android:textColor="@color/third_yellow"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/home_xp_pb"
         app:layout_constraintStart_toStartOf="@id/home_xp_pb"/>
@@ -77,7 +77,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="n / n"
-            android:textColor="@color/yellow"
+            android:textColor="@color/third_yellow"
             android:textSize="20sp"
             android:textStyle="bold"/>
     </FrameLayout>
@@ -92,6 +92,17 @@
         app:layout_constraintBottom_toTopOf="@id/home_main_character_iv"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="40dp"/>
+
+    <ImageView
+        android:id="@+id/home_add_btn"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/add_member_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:elevation="20dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

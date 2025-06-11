@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".TodoFragment">
+    tools:context=".TodoFragment"
+    android:background="@color/brown_bg">
 
     <TextView
         android:id="@+id/todo_date_tv"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="n월 n일"
         android:textSize="30sp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,7 +25,8 @@
         android:src="@drawable/baseline_arrow_circle_left_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/todo_date_tv"
-        android:layout_marginStart="20dp"/>
+        android:layout_marginStart="20dp"
+        app:tint="@color/white" />
     <ImageView
         android:id="@+id/todo_arrow_right_iv"
         android:layout_width="50dp"
@@ -32,13 +34,14 @@
         android:src="@drawable/baseline_arrow_circle_right_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/todo_date_tv"
-        android:layout_marginEnd="20dp"/>
+        android:layout_marginEnd="20dp"
+        app:tint="@color/white" />
 
     <ProgressBar
         android:id="@+id/todo_pb"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:background="@drawable/circle_progressbar_background"
+        android:background="@drawable/circle_progressbar_background_bigger"
         android:progressDrawable="@drawable/circle_progressbar"
         android:indeterminateOnly="false"
         android:max="100"
@@ -60,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="n / n"
-        android:textColor="@color/yellow"
+        android:textColor="@color/third_yellow"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/todo_pb"
@@ -72,7 +75,7 @@
         android:id="@+id/todo_bar"
         android:layout_width="0dp"
         android:layout_height="2dp"
-        android:background="@color/black"
+        android:background="@color/white"
         app:layout_constraintTop_toBottomOf="@id/todo_pb"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +93,7 @@
         android:paddingHorizontal="24dp"
         android:paddingVertical="8dp"
         android:textColor="@color/black"
-        android:backgroundTint="@color/unselected"
+        android:backgroundTint="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/todo_bar"
         android:layout_marginStart="20dp"
@@ -105,7 +108,7 @@
         android:paddingHorizontal="24dp"
         android:paddingVertical="8dp"
         android:textColor="@color/black"
-        android:backgroundTint="@color/selected"
+        android:backgroundTint="@color/button_yellow"
         app:layout_constraintStart_toEndOf="@id/todo_all_btn"
         app:layout_constraintTop_toTopOf="@id/todo_all_btn"
         android:layout_marginStart="10dp" />
@@ -119,7 +122,7 @@
         android:paddingHorizontal="24dp"
         android:paddingVertical="8dp"
         android:textColor="@color/black"
-        android:backgroundTint="@color/unselected"
+        android:backgroundTint="@color/white"
         app:layout_constraintStart_toEndOf="@id/todo_yet_btn"
         app:layout_constraintTop_toTopOf="@id/todo_all_btn"
         android:layout_marginStart="10dp" />
@@ -132,7 +135,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/todo_all_btn"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:clipToPadding="false"

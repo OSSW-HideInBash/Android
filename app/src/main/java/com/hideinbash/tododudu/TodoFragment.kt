@@ -70,7 +70,8 @@ class TodoFragment : Fragment() {
                 TodoAddDialogFragment(
                     mode = TodoAddDialogFragment.Mode.EDIT,
                     todo = todo,
-                    onComplete = { loadTodosFromRoom() } // DB 작업 후 UI 갱신
+                    onComplete = { loadTodosFromRoom() }, // DB 작업 후 UI 갱신
+                    date = currentDate.format(dbDateFormatter) // 현재 날짜 전달
                 ).show(parentFragmentManager, "TodoEditDialog")
             },
             onDelete = { todo ->
@@ -129,7 +130,8 @@ class TodoFragment : Fragment() {
         binding.todoAddBtn.setOnClickListener {
             TodoAddDialogFragment(
                 mode = TodoAddDialogFragment.Mode.CREATE,
-                onComplete = { loadTodosFromRoom() } // DB 작업 후 UI 갱신
+                onComplete = { loadTodosFromRoom() }, // DB 작업 후 UI 갱신
+                date = currentDate.format(dbDateFormatter)
             ).show(parentFragmentManager, "TodoAddDialog")
         }
 
@@ -150,6 +152,18 @@ class TodoFragment : Fragment() {
             currentDate = currentDate.plusDays(1)
             updateDateUI()
             loadTodosFromRoom()
+        }
+
+        // 날짜 클릭 시 날짜 선택 다이얼로그 표시
+        binding.todoDateTv.setOnClickListener {
+            CalendarDialogFragment(
+                selectedDate = currentDate,
+                onDateSelected = { year, month, day ->
+                    currentDate = LocalDate.of(year, month, day)
+                    updateDateUI()
+                    loadTodosFromRoom()
+                }
+            ).show(parentFragmentManager, "CalendarDialog")
         }
     }
 
@@ -175,11 +189,11 @@ class TodoFragment : Fragment() {
 
     private fun updateFilterUI() {
         binding.todoAllBtn.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
-            if (currentFilter == FilterType.ALL) R.color.selected else R.color.unselected)
+            if (currentFilter == FilterType.ALL) R.color.button_yellow else R.color.white)
         binding.todoYetBtn.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
-            if (currentFilter == FilterType.YET) R.color.selected else R.color.unselected)
+            if (currentFilter == FilterType.YET) R.color.button_yellow else R.color.white)
         binding.todoDoneBtn.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
-            if (currentFilter == FilterType.DONE) R.color.selected else R.color.unselected)
+            if (currentFilter == FilterType.DONE) R.color.button_yellow else R.color.white)
     }
 
     private fun updateDateUI() {

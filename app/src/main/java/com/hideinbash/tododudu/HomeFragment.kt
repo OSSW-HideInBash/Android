@@ -52,12 +52,21 @@ class HomeFragment:Fragment() {
         }
         binding.homeMonsterRv.adapter = monsterAdapter
 
+
+        // 할 일 추가 버튼
+        binding.homeAddBtn.setOnClickListener {
+            TodoAddDialogFragment(
+                mode = TodoAddDialogFragment.Mode.CREATE,
+                onComplete = { loadAllData() }, // DB 작업 후 UI 갱신
+                date = currentDate.format(dbDateFormatter)
+            ).show(parentFragmentManager, "TodoAddDialog")
+        }
+
         loadAllData()
     }
 
     private fun loadAllData() {
         CoroutineScope(Dispatchers.IO).launch {
-
 
             // 1. XP & 레벨 데이터 (SharedPreferences)
             val prefs = requireContext().getSharedPreferences("user_data", 0)

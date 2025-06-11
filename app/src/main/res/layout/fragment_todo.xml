@@ -21,20 +21,22 @@
         android:layout_marginTop="10dp"/>
     <ImageView
         android:id="@+id/todo_arrow_left_iv"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/baseline_arrow_circle_left_24"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/arrow_left"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/todo_date_tv"
+        app:layout_constraintBottom_toBottomOf="@id/todo_date_tv"
         android:layout_marginStart="20dp"
         app:tint="@color/white" />
     <ImageView
         android:id="@+id/todo_arrow_right_iv"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/baseline_arrow_circle_right_24"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/arrow_right"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/todo_date_tv"
+        app:layout_constraintBottom_toBottomOf="@id/todo_date_tv"
         android:layout_marginEnd="20dp"
         app:tint="@color/white" />
 

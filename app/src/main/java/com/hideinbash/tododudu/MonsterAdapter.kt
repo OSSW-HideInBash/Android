@@ -24,8 +24,8 @@ class MonsterAdapter(
 
         val gifUrl = when(item.priority) {
             1 -> "https://animatedoss.s3.amazonaws.com/59e26adf-ecd7-40e6-b319-1a5510dd42e6/video.gif"
-            2 -> "https://animatedoss.s3.amazonaws.com/14563cf1-a95b-4110-a12c-4f0ee8f36fd8/video.gif"
-            3 -> "https://animatedoss.s3.amazonaws.com/da32ac1c-a684-49aa-9ef3-0a9ca1259612/video.gif"
+            2 -> "https://animatedoss.s3.amazonaws.com/59e26adf-ecd7-40e6-b319-1a5510dd42e6/video.gif"
+            3 -> "https://animatedoss.s3.amazonaws.com/59e26adf-ecd7-40e6-b319-1a5510dd42e6/video.gif"
             else -> "https://animatedoss.s3.amazonaws.com/59e26adf-ecd7-40e6-b319-1a5510dd42e6/video.gif" // 기본 몬스터 이미지 URL
         }
         Glide.with(holder.itemView.context)

@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="70dp"/>
+        android:layout_marginBottom="60dp"/>
 
     <ProgressBar
         android:id="@+id/home_xp_pb"
@@ -26,19 +26,20 @@
         android:progress="40"
         android:progressTint="@color/third_yellow"
         android:progressBackgroundTint="@color/white"
-        android:scaleY="3"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:scaleY="0.8"
+        android:progressDrawable="@drawable/round_rect_pb"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/home_add_btn"
-        android:layout_marginBottom="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp"
         android:layout_marginStart="40dp"
-        android:layout_marginEnd="10dp"/>
+        android:layout_marginEnd="40dp"/>
     <TextView
         android:id="@+id/home_level_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lv. nn"
-        android:textStyle="bold"
+        android:fontFamily="@font/heiroflight_bold"
         android:textColor="@color/third_yellow"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/home_xp_pb"
@@ -46,13 +47,13 @@
 
     <FrameLayout
         android:id="@+id/home_todo_progress_group"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/home_main_character_iv"
-        android:layout_marginBottom="40dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="15dp">
 
         <ProgressBar
             android:id="@+id/home_todo_pb"
@@ -64,22 +65,20 @@
             android:max="100"
             android:progress="60"
             android:padding="4dp"/>
-
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_gravity="center"
             android:src="@drawable/black_circle"/>
-
         <TextView
             android:id="@+id/home_todo_tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="n / n"
+            android:fontFamily="@font/heiroflight_bold"
             android:textColor="@color/third_yellow"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textSize="20sp" />
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -88,7 +87,7 @@
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_xp_pb"
         app:layout_constraintBottom_toTopOf="@id/home_main_character_iv"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="40dp"/>

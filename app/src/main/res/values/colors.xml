@@ -11,6 +11,10 @@
     <color name="first_red">#FF0000</color>
     <color name="second_blue">#1808FF</color>
     <color name="third_yellow">#FFE500</color>
+    
+    <color name="first_red_bg_no_alpha">#8D382C</color>
+    <color name="second_blue_bg_no_alpha">#2C2A6E</color>
+    <color name="third_yellow_bg_no_alpha">#927008</color>
 
     <color name="button_yellow">#FFDC85</color>
 

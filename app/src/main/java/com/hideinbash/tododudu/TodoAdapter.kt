@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
@@ -30,15 +31,15 @@ class TodoAdapter(
         // priority에 따라 색 변경
         when (item.priority) {
             1 -> {
-                holder.itemView.setBackgroundColor(holder.itemView.context.getColor(R.color.first_red_bg))
+                holder.cardView.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.first_red_bg_no_alpha))
                 holder.orderIcon.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.first_red))
             }
             2 -> {
-                holder.itemView.setBackgroundColor(holder.itemView.context.getColor(R.color.second_blue_bg))
+                holder.cardView.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.second_blue_bg_no_alpha))
                 holder.orderIcon.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.second_blue))
             }
             3 -> {
-                holder.itemView.setBackgroundColor(holder.itemView.context.getColor(R.color.third_yellow_bg))
+                holder.cardView.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.third_yellow_bg_no_alpha))
                 holder.orderIcon.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.third_yellow))
             }
         }
@@ -62,12 +63,14 @@ class TodoAdapter(
     override fun getItemCount() = items.size
 
     class TodoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        // 뷰 요소 초기화
         val orderIcon: ImageView = view.findViewById(R.id.todo_item_order_iv)
         val orderText: TextView = view.findViewById(R.id.todo_item_order_tv)
         val editIcon: ImageView = view.findViewById(R.id.todo_item_fix_iv)
         val deleteIcon: ImageView = view.findViewById(R.id.todo_item_delete_iv)
         val title: TextView = view.findViewById(R.id.todo_item_title_tv)
         val desc: TextView = view.findViewById(R.id.todo_item_content_tv)
+        val cardView: CardView = view.findViewById(R.id.todo_item_cardview)
     }
 
     @SuppressLint("NotifyDataSetChanged")

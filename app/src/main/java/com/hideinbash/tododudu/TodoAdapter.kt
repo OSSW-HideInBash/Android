@@ -44,6 +44,12 @@ class TodoAdapter(
             }
         }
 
+        // 부가 설명 여부에 따라 처리
+        if (item.description.isNullOrBlank()) {
+            holder.desc.visibility = View.GONE
+            holder.title.setPadding(0,0,0,20)
+        }
+
         // 아이콘 클릭 리스너 설정 (완료처리)
         holder.orderIcon.setOnClickListener {
             onToggleComplete(item)

@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lv. nn"
-        android:textStyle="bold"
+        android:fontFamily="@font/heiroflight_bold"
         android:textColor="@color/third_yellow"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/home_xp_pb"
@@ -77,9 +77,9 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="n / n"
+            android:fontFamily="@font/heiroflight_bold"
             android:textColor="@color/third_yellow"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textSize="20sp" />
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:text="할 일 제목"
             android:textSize="20sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/heiroflight_bold"
             android:textColor="@color/black"
             android:gravity="center"/>
 
@@ -114,6 +114,7 @@
             android:layout_height="wrap_content"
             android:hint="부가 설명"
             android:textSize="15sp"
+            android:fontFamily="@font/heiroflight_regular"
             android:textColor="@color/black"
             android:visibility="gone"/>
     </FrameLayout>
@@ -165,6 +166,7 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:text="취소"
+        android:fontFamily="@font/heiroflight_regular"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:backgroundTint="@color/grey"
@@ -181,9 +183,10 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:text="완료"
+        android:fontFamily="@font/heiroflight_regular"
         android:textStyle="bold"
         android:textColor="@color/white"
-        android:backgroundTint="#986119"
+        android:backgroundTint="@color/brown_button"
         app:layout_constraintTop_toTopOf="@id/detail_close_btn"
         app:layout_constraintStart_toEndOf="@id/detail_close_btn"
         app:layout_constraintEnd_toEndOf="parent"

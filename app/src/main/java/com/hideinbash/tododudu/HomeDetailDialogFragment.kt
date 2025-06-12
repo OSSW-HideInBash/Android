@@ -16,17 +16,23 @@ class HomeDetailDialogFragment() : DialogFragment() {
 
     companion object {
         private const val ARG_TODO = "arg_todo"
-        fun newInstance(todo: Todo, onComplete: (() -> Unit)? = null): HomeDetailDialogFragment {
+        fun newInstance(
+            todo: Todo,
+            onComplete: ((Long) -> Unit)? = null,
+            onUpdate: ((Long) -> Unit)? = null  // 수정용 콜백 추가
+        ): HomeDetailDialogFragment {
             val fragment = HomeDetailDialogFragment()
             val args = Bundle()
             args.putSerializable(ARG_TODO, todo)
             fragment.arguments = args
             fragment.onComplete = onComplete
+            fragment.onUpdate = onUpdate  // 수정 콜백 설정
             return fragment
         }
     }
 
-    private var onComplete: (() -> Unit)? = null
+    private var onComplete: ((Long) -> Unit)? = null
+    private var onUpdate: ((Long) -> Unit)? = null  // 수정용 콜백
     private lateinit var todo: Todo
     private var _binding: FragmentHomeDetailDialogBinding? = null
     private val binding get() = _binding!!
@@ -71,16 +77,9 @@ class HomeDetailDialogFragment() : DialogFragment() {
 
         // 완료 버튼
         binding.detailCompleteBtn.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                val db = TodoDatabase.getInstance(requireContext())
-                val updatedTodo = todo.copy(isCompleted = true)
-                db.todoDao().updateTodo(updatedTodo)
-                withContext(Dispatchers.Main) {
-                    addXp(20)
-                    onComplete?.invoke()
-                    dismiss()
-                }
-            }
+            // HomeFragment에 완료 처리 위임
+            onComplete?.invoke(todo.id)
+            dismiss()
         }
 
         // 취소(닫기) 버튼
@@ -172,7 +171,8 @@ class HomeDetailDialogFragment() : DialogFragment() {
                 val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
                 imm.hideSoftInputFromWindow(binding.detailTitleEdit.windowToken, 0)
 
-                onComplete?.invoke()
+                // 수정 완료 시에는 onUpdate 콜백 호출 (데이터 갱신용)
+                onUpdate?.invoke(updatedTodo.id)
                 dismiss()
             }
         }
@@ -184,38 +184,5 @@ class HomeDetailDialogFragment() : DialogFragment() {
             (resources.displayMetrics.widthPixels * 0.9).toInt(), // 화면의 90% 너비
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-    }
-
-    private fun addXp(amount: Int) {
-        val prefs = requireContext().getSharedPreferences("user_data", 0)
-        var xp = prefs.getInt("xp", 0)
-        var level = prefs.getInt("level", 1)
-        var xpForNext = 100 + (level - 1) * 20 // 레벨업에 필요한 XP 계산
-
-        xp += amount
-
-        // 레벨업
-        while (xp >= xpForNext) {
-            xp -= xpForNext
-            level++
-            xpForNext = 100 + (level - 1) * 20 // 다음 레벨업에 필요한 XP 계산
-        }
-
-        // 레벨다운
-        while (xp < 0 && level > 1) {
-            level--
-            xpForNext = 100 + (level - 1) * 20 // 이전 레벨업에 필요한 XP 계산
-            xp += xpForNext
-        }
-
-        // 최소값 보정
-        if (xp < 0) xp = 0
-        if (level < 1) level = 1
-
-        prefs.edit()
-            .putInt("xp", xp)
-            .putInt("level", level)
-            .putInt("next_level_xp", xpForNext)
-            .apply()
     }
 }

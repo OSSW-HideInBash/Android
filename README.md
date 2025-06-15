@@ -18,6 +18,7 @@
   - Coroutine / Flow (🔄 비동기 처리)  
   - Glide(🖼️ 이미지 로딩)
   - Canvas(이미지 인식 스켈레톤 생성)
+- **아키텍처**: SAA (Single Activity Architecture)
 
 ---
 

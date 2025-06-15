@@ -90,7 +90,7 @@
         app:layout_constraintTop_toBottomOf="@id/home_xp_pb"
         app:layout_constraintBottom_toTopOf="@id/home_main_character_iv"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="40dp"/>
+        android:layout_marginBottom="30dp"/>
 
     <ImageView
         android:id="@+id/home_add_btn"

@@ -48,6 +48,10 @@ class TodoAdapter(
         if (item.description.isNullOrBlank()) {
             holder.desc.visibility = View.GONE
             holder.title.setPadding(0,0,0,20)
+        } else {
+            holder.desc.visibility = View.VISIBLE
+            holder.desc.text = item.description
+            holder.title.setPadding(0,0,0,0)
         }
 
         // 아이콘 클릭 리스너 설정 (완료처리)

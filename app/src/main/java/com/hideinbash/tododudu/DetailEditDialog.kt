@@ -206,9 +206,9 @@ class DetailEditDialog(
             }
 
             val client = OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(300, TimeUnit.SECONDS)
+                .readTimeout(300, TimeUnit.SECONDS)
+                .writeTimeout(300, TimeUnit.SECONDS)
                 .build()
 
             var index = 1
@@ -306,6 +306,7 @@ class DetailEditDialog(
                     Glide.with(requireContext())
                         .load(gifUrl)
                         .into(binding.detailImageIv)
+                    startDetailEdit()
                 } else {
                     Log.d("gif-test", "응답 본문이 null입니다.")
                 }
@@ -337,6 +338,7 @@ class DetailEditDialog(
             if (uri == null){
                 Toast.makeText(requireContext(), "사진이 받아와지지 않았습니다", Toast.LENGTH_SHORT).show()
             }
+            binding.detailImageIv.setImageURI(uri)
             editMode = true
             binding.skeletonview.visibility = View.VISIBLE
             binding.animChgBtn.visibility = View.VISIBLE

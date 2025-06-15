@@ -135,8 +135,9 @@ class HomeFragment:Fragment() {
         monsterAdapter.setItemCompleting(todoId)
 
         // 3. 2초 후 실제 DB 업데이트
+        //애니메이션이 좀 늦게나와서 5초로 변경
         CoroutineScope(Dispatchers.IO).launch {
-            kotlinx.coroutines.delay(2000)
+            kotlinx.coroutines.delay(5000)
 
             try {
                 val db = TodoDatabase.getInstance(requireContext().applicationContext)

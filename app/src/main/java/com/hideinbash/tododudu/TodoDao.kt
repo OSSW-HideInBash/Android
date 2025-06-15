@@ -22,4 +22,8 @@ interface TodoDao {
 
     @Query("SELECT * FROM todo WHERE date BETWEEN :startDate AND :endDate")
     suspend fun getTodosBetweenDates(startDate: String, endDate: String): List<Todo>
+
+    // id로 todo 찾기
+    @Query("SELECT * FROM todo WHERE id = :id")
+    suspend fun getTodoById(id: Long): Todo?
 }

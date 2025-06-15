@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.hideinbash.tododudu.databinding.FragmentHomeBinding
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +24,9 @@ class HomeFragment:Fragment() {
 
     private lateinit var monsterAdapter: MonsterAdapter
 
+    // 완료 예정인 할 일들을 추적하는 Set
+    private val completingTodos = mutableSetOf<Long>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,33 +38,50 @@ class HomeFragment:Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadAllData()
-        Log.d("onViewCheck", "check")
         monsterAdapter = MonsterAdapter(
             items = emptyList(),
             onItemClick = { todo ->
                 // 할 일 아이템 클릭 시 처리
-                HomeDetailDialogFragment.newInstance(todo) {
-                    loadAllData()
-                }.show(parentFragmentManager, "HomeDetailDialog")
+                HomeDetailDialogFragment.newInstance(
+                    todo = todo,
+                    onComplete = { todoId ->
+                        handleTodoCompletion(todoId)
+                    },
+                    onUpdate = { todoId ->
+                        // 수정 완료 시 데이터만 새로고침 (완료 처리 X)
+                        loadAllData()
+                    }
+                ).show(parentFragmentManager, "HomeDetailDialog")
             }
         )
-        binding.homeMonsterRv.layoutManager = LinearLayoutManager(requireContext()).apply {
-            stackFromEnd = true     // 아이템을 아래에서부터 쌓기
-            reverseLayout = false   // 데이터 순서는 그대로
-        }
+
+        setupRecyclerView()
+        setupAddButton()
+        loadAllData()
+    }
+
+    private fun setupRecyclerView() {
+        // 패턴 정의
+        val pattern = listOf(
+            0.65f to 0.9f,
+            0.35f to 0.75f,
+            0.85f to 0.6f,
+            0.2f to 0.45f,
+            0.55f to 0.3f
+        )
+        val itemPx = (100 * resources.displayMetrics.density).toInt()   // 아이템 크기 (px 계산)
+        binding.homeMonsterRv.layoutManager = MonsterPatternLayoutManager(pattern, itemPx, itemPx)
         binding.homeMonsterRv.adapter = monsterAdapter
+    }
 
-
-        // 할 일 추가 버튼
+    private fun setupAddButton() {
         binding.homeAddBtn.setOnClickListener {
             TodoAddDialogFragment(
                 mode = TodoAddDialogFragment.Mode.CREATE,
-                onComplete = { loadAllData() }, // DB 작업 후 UI 갱신
+                onComplete = { loadAllData() },
                 date = currentDate.format(dbDateFormatter)
             ).show(parentFragmentManager, "TodoAddDialog")
         }
-
-        loadAllData()
     }
 
     private fun loadAllData() {
@@ -79,7 +98,7 @@ class HomeFragment:Fragment() {
             val character = info_prefs.getString("character","https://animatedoss.s3.amazonaws.com/fad01384-aeea-4539-946e-025387d43e81/video.gif")
 
             // 2. 할 일 데이터 (RoomDB)
-            val db = TodoDatabase.getInstance(requireContext())
+            val db = TodoDatabase.getInstance(requireContext().applicationContext)
             val dateStr = currentDate.format(dbDateFormatter)
             val allTodos = db.todoDao().getTodosByDate(dateStr)
             val yetTodos = db.todoDao().getYetTodosByDate(dateStr)
@@ -105,6 +124,81 @@ class HomeFragment:Fragment() {
                     .into(binding.homeMainCharacterIv)
             }
         }
+    }
+
+    // 할 일 완료 처리 로직
+    private fun handleTodoCompletion(todoId: Long) {
+        // 1. 완료 예정 상태로 추가
+        completingTodos.add(todoId)
+
+        // 2. 즉시 이미지 변경
+        monsterAdapter.setItemCompleting(todoId)
+
+        // 3. 2초 후 실제 DB 업데이트
+        CoroutineScope(Dispatchers.IO).launch {
+            kotlinx.coroutines.delay(2000)
+
+            try {
+                val db = TodoDatabase.getInstance(requireContext().applicationContext)
+
+                // 현재 할 일 정보 가져오기
+                val currentTodo = db.todoDao().getTodoById(todoId)
+                if (currentTodo != null && !currentTodo.isCompleted) {
+                    // 완료 상태로 업데이트
+                    val updatedTodo = currentTodo.copy(isCompleted = true)
+                    db.todoDao().updateTodo(updatedTodo)
+
+                    Log.d("HomeFragment", "Todo $todoId completed successfully")
+
+                    // UI 업데이트 (메인 스레드에서)
+                    withContext(Dispatchers.Main) {
+                        addXp(20)
+                        completingTodos.remove(todoId)
+                        loadAllData() // 데이터 새로고침
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("HomeFragment", "Error completing todo $todoId: ${e.message}")
+                // 에러 발생 시 완료 예정 상태 해제
+                withContext(Dispatchers.Main) {
+                    completingTodos.remove(todoId)
+                    monsterAdapter.removeCompletingItem(todoId)
+                }
+            }
+        }
+    }
+
+    private fun addXp(amount: Int) {
+        val prefs = requireContext().getSharedPreferences("user_data", 0)
+        var xp = prefs.getInt("xp", 0)
+        var level = prefs.getInt("level", 1)
+        var xpForNext = 100 + (level - 1) * 20 // 레벨업에 필요한 XP 계산
+
+        xp += amount
+
+        // 레벨업
+        while (xp >= xpForNext) {
+            xp -= xpForNext
+            level++
+            xpForNext = 100 + (level - 1) * 20 // 다음 레벨업에 필요한 XP 계산
+        }
+
+        // 레벨다운
+        while (xp < 0 && level > 1) {
+            level--
+            xpForNext = 100 + (level - 1) * 20 // 이전 레벨업에 필요한 XP 계산
+            xp += xpForNext
+        }
+
+        // 최소값 보정
+        if (xp < 0) xp = 0
+        if (level < 1) level = 1
+
+        prefs.edit()
+            .putInt("xp", xp)
+            .putInt("level", level)
+            .putInt("next_level_xp", xpForNext)
+            .apply()
     }
 
     override fun onResume() {
